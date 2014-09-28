@@ -1,5 +1,5 @@
 {
-	"name": "Moncef12/IndicoIo-php",
+	"name": "indicoio/indicoio-php",
 	"description": "Rest Api Wrapper for PHP.",
 	"keywords": ["Rest Api Wrapper for PHP", "IndicoIo"],
 	"type": "project",
