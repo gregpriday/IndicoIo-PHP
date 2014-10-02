@@ -19,7 +19,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testPoliticalReturnFullErrorMsgWhenGivenIntegerORBool()
     {
-        $keys_exptected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
         $data_integer_request = \IndicoIo\IndicoIo::political(2);
         $data_bool_request    = \IndicoIo\IndicoIo::political(true);
         
