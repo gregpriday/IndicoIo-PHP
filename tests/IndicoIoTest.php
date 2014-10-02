@@ -17,4 +17,17 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($keys_exptected, $keys_result);
     }
 
+    public function testPoliticalReturnFullErrorMsgWhenGivenIntegerORBool()
+    {
+        $keys_exptected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
+        $data_integer_request = \IndicoIo\IndicoIo::political(2);
+        $data_bool_request    = \IndicoIo\IndicoIo::political(true);
+        
+        $this->assertArrayHasKey('Error', $data_integer_request);
+        $this->assertGreaterThan(0, strlen($data_integer_request['Error']));
+
+        $this->assertArrayHasKey('Error', $data_bool_request);
+        $this->assertGreaterThan(0, strlen($data_bool_request['Error']));
+    }
+
 }
