@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/Moncef12/IndicoIo-php.svg?branch=master)](https://travis-ci.org/Moncef12/IndicoIo-php)
 
+[![Code Climate](https://codeclimate.com/github/Moncef12/IndicoIo-php/badges/gpa.svg)](https://codeclimate.com/github/Moncef12/IndicoIo-php)
+
 
 IndicoIo-php
 =========
