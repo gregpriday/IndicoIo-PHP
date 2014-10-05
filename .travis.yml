@@ -4,7 +4,7 @@ php:
   - 5.4
   - hhvm
 before_install:
-  - /home/travis/.phpenv/versions/5.5/bin/composer self-update
+  - composer selfupdate
+
 install:
-  - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - composer install
