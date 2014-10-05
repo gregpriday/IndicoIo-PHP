@@ -116,7 +116,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testfacialFeaturesWhenGivenTheRightParameters()
     {
-        $humour_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $data_test = json_decode($file_content);
         $image     = $data_test[0];
