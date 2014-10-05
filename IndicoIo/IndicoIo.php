@@ -13,21 +13,41 @@ class IndicoIo
 
 	public static function  political($text)
 	{
-		return self::_callService($text, 'political');
+		return self::_callService('text', $text, 'political');
 	}
 
-	public static function  sentimental($text)
+	public static function sentiment($text)
 	{
-		return self::_callService($text, 'sentimental');
+		return self::_callService('text', $text, 'sentiment');
 	}
 
-	protected static function _callService($text, $service)
+	public static  function posneg($text)
+	{
+		return self::sentiment($text);
+	}
+
+	public static function  language($text)
+	{
+		return self::_callService('text', $text, 'language');
+	}
+
+	public static  function  fer($image)
+	{
+		return self::_callService('face', $image, 'fer');
+	}
+
+	public static function facial_features($image)
+	{
+		return self::_callService('face', $image, 'facialfeatures')['response'];
+	}
+
+	protected static function _callService($name_to_post, $data, $service)
 	{
 		$context = stream_context_create(array(
 			'http' => array(
 				'method' => 'POST',
 				'header' => 'Content-Type: application/json',
-				'content' => json_encode(array('text' => $text))
+				'content' => json_encode(array($name_to_post => $data))
 			)
 		));
 
@@ -40,25 +60,4 @@ class IndicoIo
 	{
 		return json_decode($data, $returnArray);
 	}
-
-	/*public static  function  posneg($value='')
-	{
-		# code...
-	}
-
-	public static function  language($value='')
-	{
-		# code...
-	}
-
-	public static  function  fer($value='')
-	{
-		# code...
-	}
-
-	public static function facial_features($value='')
-	{
-		# code...
-	}*/
-
 }
