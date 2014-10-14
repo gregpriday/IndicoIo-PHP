@@ -33,7 +33,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     {
         $data = \IndicoIo\IndicoIo::sentiment('whales suck');
 
-        $this->assertInternalType('double', $data);
+        $this->assertInternalType('float', $data);
     }
 
 
