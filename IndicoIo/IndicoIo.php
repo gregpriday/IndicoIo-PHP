@@ -8,37 +8,37 @@ namespace IndicoIo;
 class IndicoIo
 {
 	protected static $_options = array(
-		'default_host' => 'http://api.indico.io'
+		'default_host' => 'http://apiv1.indico.io'
 	);
 
 	public static function  political($text)
 	{
-		return self::_callService('text', $text, 'political');
+		return self::_callService('data', $text, 'political')['results'];
 	}
 
 	public static function sentiment($text)
 	{
-		return self::_callService('text', $text, 'sentiment');
+		return self::_callService('data', $text, 'sentiment')['results'];
 	}
 
 	public static  function posneg($text)
 	{
-		return self::sentiment($text);
+		return self::sentiment($text)['results'];
 	}
 
 	public static function  language($text)
 	{
-		return self::_callService('text', $text, 'language');
+		return self::_callService('data', $text, 'language')['results'];
 	}
 
 	public static  function  fer($image)
 	{
-		return self::_callService('face', $image, 'fer');
+		return self::_callService('data', $image, 'fer')['results'];
 	}
 
 	public static function facial_features($image)
 	{
-		return self::_callService('face', $image, 'facialfeatures')['response'];
+		return self::_callService('data', $image, 'facialfeatures')['results'];
 	}
 
 	protected static function _callService($name_to_post, $data, $service)
