@@ -113,7 +113,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($humour_expected, $keys_result);
     }
 
-    public function testfacialg)
+    public function testfacialFeaturesWhenGivenTheRightParameters()
     {
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $data_test = json_decode($file_content, true);
