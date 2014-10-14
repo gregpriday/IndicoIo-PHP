@@ -8,7 +8,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testPoliticalWhenGivenTheRightParameters()
     {
         $keys_exptected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
-        $data = \IndicoIo\IndicoIo::political('Obama is the USA president !!');
+        $data = \IndicoIo\IndicoIo::political('save the whales');
         $keys_result = array_keys($data);
         
         sort($keys_exptected);
@@ -31,14 +31,13 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testSentimentWhenGivenTheRightParameters()
     {
-        $keys_exptected = array('Sentiment');
-        $data = \IndicoIo\IndicoIo::sentiment('Obama is the USA president !!');
+        $data = \IndicoIo\IndicoIo::sentiment('whales suck');
         $keys_result = array_keys($data);
         
         sort($keys_exptected);
         sort($keys_result);
 
-        $this->assertEquals($keys_exptected, $keys_result);
+        $this->assertInstanceOf('float', $keys_result);
     }
 
 
@@ -47,8 +46,8 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $data = \IndicoIo\IndicoIo::sentiment('Obama is the USA president !!');
         $this->assertArrayHasKey('Sentiment', $data);
         // The returned must be between 0 and 1.
-        $this->assertGreaterThan(0, $data['Sentiment']);
-        $this->assertGreaterThan($data['Sentiment'], 1);
+        $this->assertGreaterThan(0, $data);
+        $this->assertGreaterThan($data, 1);
     }
 
     public function testLanguageWhenGivenTheRightPrameters()
@@ -114,7 +113,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($humour_expected, $keys_result);
     }
 
-    public function testfacialFeaturesWhenGivenTheRightParameters()
+    public function testfacialg)
     {
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $data_test = json_decode($file_content, true);
