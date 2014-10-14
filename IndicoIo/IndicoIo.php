@@ -13,32 +13,68 @@ class IndicoIo
 
 	public static function  political($text)
 	{
-		return self::_callService('data', $text, 'political')['results'];
-	}
+        $data = self::_callService('data', $text, 'political');
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
+    }
 
 	public static function sentiment($text)
 	{
-		return self::_callService('data', $text, 'sentiment')['results'];
+        $data = self::_callService('data', $text, 'sentiment');
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
 	}
 
 	public static  function posneg($text)
 	{
-		return self::sentiment($text)['results'];
+		$data = self::sentiment($text);
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
 	}
 
 	public static function  language($text)
 	{
-		return self::_callService('data', $text, 'language')['results'];
+		$data = self::_callService('data', $text, 'language');
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
 	}
 
 	public static  function  fer($image)
 	{
-		return self::_callService('data', $image, 'fer')['results'];
+		$data = self::_callService('data', $image, 'fer');
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
 	}
 
 	public static function facial_features($image)
 	{
-		return self::_callService('data', $image, 'facialfeatures')['results'];
+		$data = self::_callService('data', $image, 'facialfeatures');
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
 	}
 
 	protected static function _callService($name_to_post, $data, $service)

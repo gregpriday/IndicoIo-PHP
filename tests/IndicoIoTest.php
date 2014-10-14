@@ -32,12 +32,8 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testSentimentWhenGivenTheRightParameters()
     {
         $data = \IndicoIo\IndicoIo::sentiment('whales suck');
-        $keys_result = array_keys($data);
-        
-        sort($keys_exptected);
-        sort($keys_result);
 
-        $this->assertInstanceOf('double', $keys_result);
+        $this->assertInstanceOf('double', $data);
     }
 
 
