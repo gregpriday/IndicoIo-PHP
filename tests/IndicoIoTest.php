@@ -22,11 +22,11 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $data_integer_request = \IndicoIo\IndicoIo::political(2);
         $data_bool_request    = \IndicoIo\IndicoIo::political(true);
         
-        $this->assertArrayHasKey('Error', $data_integer_request);
-        $this->assertGreaterThan(0, strlen($data_integer_request['Error']));
+        $this->assertArrayHasKey('error', $data_integer_request);
+        $this->assertGreaterThan(0, strlen($data_integer_request['error']));
 
-        $this->assertArrayHasKey('Error', $data_bool_request);
-        $this->assertGreaterThan(0, strlen($data_bool_request['Error']));
+        $this->assertArrayHasKey('error', $data_bool_request);
+        $this->assertGreaterThan(0, strlen($data_bool_request['error']));
     }
 
     public function testSentimentWhenGivenTheRightParameters()
@@ -37,14 +37,14 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         sort($keys_exptected);
         sort($keys_result);
 
-        $this->assertInstanceOf('float', $keys_result);
+        $this->assertInstanceOf('double', $keys_result);
     }
 
 
     public function testSentimentReturnValueBetweenOneAndZero()
     {
         $data = \IndicoIo\IndicoIo::sentiment('Obama is the USA president !!');
-        $this->assertArrayHasKey('Sentiment', $data);
+        //$this->assertArrayHasKey('Sentiment', $data);
         // The returned must be between 0 and 1.
         $this->assertGreaterThan(0, $data);
         $this->assertGreaterThan($data, 1);
