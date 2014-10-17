@@ -8,7 +8,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testPoliticalWhenGivenTheRightParameters()
     {
         $keys_exptected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
-        $data = \IndicoIo\IndicoIo::political('Obama is the USA president !!');
+        $data = \IndicoIo\IndicoIo::political('save the whales');
         $keys_result = array_keys($data);
         
         sort($keys_exptected);
@@ -22,33 +22,28 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $data_integer_request = \IndicoIo\IndicoIo::political(2);
         $data_bool_request    = \IndicoIo\IndicoIo::political(true);
         
-        $this->assertArrayHasKey('Error', $data_integer_request);
-        $this->assertGreaterThan(0, strlen($data_integer_request['Error']));
+        $this->assertArrayHasKey('error', $data_integer_request);
+        $this->assertGreaterThan(0, strlen($data_integer_request['error']));
 
-        $this->assertArrayHasKey('Error', $data_bool_request);
-        $this->assertGreaterThan(0, strlen($data_bool_request['Error']));
+        $this->assertArrayHasKey('error', $data_bool_request);
+        $this->assertGreaterThan(0, strlen($data_bool_request['error']));
     }
 
     public function testSentimentWhenGivenTheRightParameters()
     {
-        $keys_exptected = array('Sentiment');
-        $data = \IndicoIo\IndicoIo::sentiment('Obama is the USA president !!');
-        $keys_result = array_keys($data);
-        
-        sort($keys_exptected);
-        sort($keys_result);
+        $data = \IndicoIo\IndicoIo::sentiment('whales suck');
 
-        $this->assertEquals($keys_exptected, $keys_result);
+        $this->assertInternalType('float', $data);
     }
 
 
     public function testSentimentReturnValueBetweenOneAndZero()
     {
         $data = \IndicoIo\IndicoIo::sentiment('Obama is the USA president !!');
-        $this->assertArrayHasKey('Sentiment', $data);
+        //$this->assertArrayHasKey('Sentiment', $data);
         // The returned must be between 0 and 1.
-        $this->assertGreaterThan(0, $data['Sentiment']);
-        $this->assertGreaterThan($data['Sentiment'], 1);
+        $this->assertGreaterThan(0, $data);
+        $this->assertGreaterThan($data, 1);
     }
 
     public function testLanguageWhenGivenTheRightPrameters()

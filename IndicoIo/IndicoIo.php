@@ -8,37 +8,73 @@ namespace IndicoIo;
 class IndicoIo
 {
 	protected static $_options = array(
-		'default_host' => 'http://api.indico.io'
+		'default_host' => 'http://apiv1.indico.io'
 	);
 
 	public static function  political($text)
 	{
-		return self::_callService('text', $text, 'political');
-	}
+        $data = self::_callService('data', $text, 'political');
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
+    }
 
 	public static function sentiment($text)
 	{
-		return self::_callService('text', $text, 'sentiment');
+        $data = self::_callService('data', $text, 'sentiment');
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
 	}
 
 	public static  function posneg($text)
 	{
-		return self::sentiment($text);
+		$data = self::sentiment($text);
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
 	}
 
 	public static function  language($text)
 	{
-		return self::_callService('text', $text, 'language');
+		$data = self::_callService('data', $text, 'language');
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
 	}
 
 	public static  function  fer($image)
 	{
-		return self::_callService('face', $image, 'fer');
+		$data = self::_callService('data', $image, 'fer');
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
 	}
 
 	public static function facial_features($image)
 	{
-		return self::_callService('face', $image, 'facialfeatures')['response'];
+		$data = self::_callService('data', $image, 'facialfeatures');
+        if(array_key_exists('results', $data)){
+            return $data['results'];
+        }
+        else {
+            return $data;
+        }
 	}
 
 	protected static function _callService($name_to_post, $data, $service)
