@@ -13,68 +13,42 @@ class IndicoIo
 
 	public static function  political($text)
 	{
-        $data = self::_callService('data', $text, 'political');
-        if(array_key_exists('results', $data)){
-            return $data['results'];
-        }
-        else {
-            return $data;
-        }
+        return self::_callService('data', $text, 'political');
     }
 
 	public static function sentiment($text)
 	{
-        $data = self::_callService('data', $text, 'sentiment');
-        if(array_key_exists('results', $data)){
-            return $data['results'];
-        }
-        else {
-            return $data;
-        }
+        return self::_callService('data', $text, 'sentiment');
 	}
 
 	public static  function posneg($text)
 	{
-		$data = self::sentiment($text);
-        if(array_key_exists('results', $data)){
-            return $data['results'];
-        }
-        else {
-            return $data;
-        }
+		return self::sentiment($text);
 	}
 
-	public static function  language($text)
+	public static function language($text)
 	{
-		$data = self::_callService('data', $text, 'language');
-        if(array_key_exists('results', $data)){
-            return $data['results'];
-        }
-        else {
-            return $data;
-        }
+		return self::_callService('data', $text, 'language');
 	}
 
-	public static  function  fer($image)
+	public static function classification($text)
 	{
-		$data = self::_callService('data', $image, 'fer');
-        if(array_key_exists('results', $data)){
-            return $data['results'];
-        }
-        else {
-            return $data;
-        }
+		return self::_callService('data', $text, 'documentclassification');
+	}
+
+	public static function named_entities($text)
+	{
+		return self::_callService('data', $text, 'ner');
+	}
+
+	public static function fer($image)
+	{
+		return self::_callService('data', $image, 'fer');
 	}
 
 	public static function facial_features($image)
 	{
-		$data = self::_callService('data', $image, 'facialfeatures');
-        if(array_key_exists('results', $data)){
-            return $data['results'];
-        }
-        else {
-            return $data;
-        }
+		return self::_callService('data', $image, 'facialfeatures');
 	}
 
 	protected static function _callService($name_to_post, $data, $service)
@@ -89,7 +63,13 @@ class IndicoIo
 
 		$query_url = self::$_options['default_host']."/$service";
 		$result = file_get_contents($query_url, false, $context);
-		return self::_parseAnswer($result);
+		$parsed = self::_parseAnswer($result);
+		if(array_key_exists('results', $parsed)){
+            return $parsed['results'];
+        }
+        else {
+            return $parsed;
+        }
 	}
 
 	protected static function _parseAnswer($data, $returnArray=true)

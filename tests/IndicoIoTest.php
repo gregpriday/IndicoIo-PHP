@@ -7,14 +7,14 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testPoliticalWhenGivenTheRightParameters()
     {
-        $keys_exptected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
+        $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
         $data = \IndicoIo\IndicoIo::political('save the whales');
         $keys_result = array_keys($data);
         
-        sort($keys_exptected);
+        sort($keys_expected);
         sort($keys_result);
 
-        $this->assertEquals($keys_exptected, $keys_result);
+        $this->assertEquals($keys_expected, $keys_result);
     }
 
     public function testPoliticalReturnFullErrorMsgWhenGivenIntegerORBool()
@@ -94,12 +94,35 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty(array_diff($expected_languages, $keys_result));
     }
 
+    public function testDocumentClassification()
+    {
+        $keys_expected = array('political', 'arts', 'products', 'news');
+        $data = \IndicoIo\IndicoIo::classification('save the whales');
+        $keys_result = array_keys($data);
+        
+        sort($keys_expected);
+        sort($keys_result);
+
+        $this->assertEquals($keys_expected, $keys_result);
+    }
+
+    public function testNamedEntities()
+    {
+        $keys_expected = array('named entity');
+        $data = \IndicoIo\IndicoIo::named_entities('save the whales');
+        $keys_result = array_keys($data);
+        
+        sort($keys_expected);
+        sort($keys_result);
+
+        $this->assertEquals($keys_expected, $keys_result);
+    }
+
     public function testFerWhenGivenTheRightParameters()
     {
         $humour_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $data_test = json_decode($file_content, true);
-        $image     = $data_test[0];
+        $image = json_decode($file_content, true);
         $data = \IndicoIo\IndicoIo::fer($image);
         $keys_result = array_keys($data);
 
@@ -112,8 +135,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testfacialFeaturesWhenGivenTheRightParameters()
     {
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $data_test = json_decode($file_content, true);
-        $image     = $data_test[0];
+        $image = json_decode($file_content, true);
         $data = \IndicoIo\IndicoIo::facial_features($image);
 
         $this->assertEquals(count($data), 48);
