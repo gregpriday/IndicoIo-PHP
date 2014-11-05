@@ -36,11 +36,6 @@ class IndicoIo
 		return self::_callService('data', $text, 'documentclassification');
 	}
 
-	public static function named_entities($text)
-	{
-		return self::_callService('data', $text, 'ner');
-	}
-
 	public static function fer($image)
 	{
 		return self::_callService('data', $image, 'fer');

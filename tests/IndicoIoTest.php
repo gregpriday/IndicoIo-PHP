@@ -105,19 +105,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($keys_expected, $keys_result);
     }
-
-    public function testNamedEntities()
-    {
-        $keys_expected = array('named entity');
-        $data = \IndicoIo\IndicoIo::named_entities('save the whales');
-        $keys_result = array_keys($data);
-        
-        sort($keys_expected);
-        sort($keys_result);
-
-        $this->assertEquals($keys_expected, $keys_result);
-    }
-
+    
     public function testFerWhenGivenTheRightParameters()
     {
         $humour_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
