@@ -31,9 +31,9 @@ class IndicoIo
 		return self::_callService('data', $text, 'language');
 	}
 
-	public static function classification($text)
+	public static function text_tags($text)
 	{
-		return self::_callService('data', $text, 'documentclassification');
+		return self::_callService('data', $text, 'text_tags');
 	}
 
 	public static function fer($image)

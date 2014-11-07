@@ -94,10 +94,10 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty(array_diff($expected_languages, $keys_result));
     }
 
-    public function testDocumentClassification()
+    public function testTextTags()
     {
         $keys_expected = array('political', 'arts', 'products', 'news');
-        $data = \IndicoIo\IndicoIo::classification('save the whales');
+        $data = \IndicoIo\IndicoIo::text_tags('save the whales');
         $keys_result = array_keys($data);
         
         sort($keys_expected);
