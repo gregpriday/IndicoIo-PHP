@@ -33,7 +33,7 @@ class IndicoIo
 
 	public static function text_tags($text)
 	{
-		return self::_callService('data', $text, 'text_tags');
+		return self::_callService('data', $text, 'texttags');
 	}
 
 	public static function fer($image)
