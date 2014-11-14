@@ -31,7 +31,7 @@ Installation
 composer install
 ```
 
-Update
+Documentation
 ------------
 We now have [organized documentation](http://indico.readme.io/v1.0/docs)
 
