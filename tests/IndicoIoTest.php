@@ -115,12 +115,21 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($humour_expected, $keys_result);
     }
 
-    public function testfacialFeaturesWhenGivenTheRightParameters()
+    public function testFacialFeaturesWhenGivenTheRightParameters()
     {
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
         $data = \IndicoIo\IndicoIo::facial_features($image);
 
         $this->assertEquals(count($data), 48);
+    }
+
+    public function testImageFeaturesWhenGivenTheRightParameters()
+    {
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $data = \IndicoIo\IndicoIo::image_features($image);
+
+        $this->assertEquals(count($data), 2048);
     }
 }

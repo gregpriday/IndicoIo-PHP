@@ -13,12 +13,12 @@ class IndicoIo
 
 	public static function  political($text)
 	{
-        return self::_callService('data', $text, 'political');
+        return self::_callService($text, 'political');
     }
 
 	public static function sentiment($text)
 	{
-        return self::_callService('data', $text, 'sentiment');
+        return self::_callService($text, 'sentiment');
 	}
 
 	public static  function posneg($text)
@@ -28,28 +28,33 @@ class IndicoIo
 
 	public static function language($text)
 	{
-		return self::_callService('data', $text, 'language');
+		return self::_callService($text, 'language');
 	}
 
 	public static function text_tags($text)
 	{
-		return self::_callService('data', $text, 'texttags');
+		return self::_callService($text, 'texttags');
 	}
 
 	public static function fer($image)
 	{
-		return self::_callService('data', $image, 'fer');
+		return self::_callService($image, 'fer');
 	}
 
 	public static function facial_features($image)
 	{
-		return self::_callService('data', $image, 'facialfeatures');
+		return self::_callService($image, 'facialfeatures');
 	}
 
-	protected static function _callService($name_to_post, $data, $service)
+	public static function image_features($image)
+	{
+		return self::_callService($image, 'imagefeatures');
+	}
+
+	protected static function _callService($data, $service)
 	{
 		$query_url = self::$_options['default_host']."/$service";
-		$json_data = json_encode(array($name_to_post => $data));
+		$json_data = json_encode(array('data' => $data));
 
 		$ch = curl_init($query_url);                                                                      
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
