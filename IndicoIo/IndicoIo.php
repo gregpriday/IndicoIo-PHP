@@ -81,9 +81,9 @@ class IndicoIo
 		return self::_callService($image, 'fer', $cloud, $auth);
 	}
 
-	public static function batch_fer($image, $cloud = false, $auth = false)
+	public static function batch_fer($images, $cloud = false, $auth = false)
 	{
-		return self::_callService($image, 'fer', $cloud, $auth, $batch = true);
+		return self::_callService($images, 'fer', $cloud, $auth, $batch = true);
 	}
 
 	public static function facial_features($image, $cloud = false, $auth = false)
@@ -91,9 +91,9 @@ class IndicoIo
 		return self::_callService($image, 'facialfeatures', $auth);
 	}
 
-	public static function batch_facial_features($image, $cloud = false, $auth = false)
+	public static function batch_facial_features($images, $cloud = false, $auth = false)
 	{
-		return self::_callService($image, 'facialfeatures', $auth, $batch = true);
+		return self::_callService($images, 'facialfeatures', $cloud, $auth, $batch = true);
 	}
 
 	public static function image_features($image, $cloud = false, $auth = false)
@@ -101,9 +101,9 @@ class IndicoIo
 		return self::_callService($image, 'imagefeatures', $cloud, $auth);
 	}
 
-	public static function batch_image_features($image, $cloud = false, $auth = false)
+	public static function batch_image_features($images, $cloud = false, $auth = false)
 	{
-		return self::_callService($image, 'imagefeatures', $cloud, $auth, $batch = true);
+		return self::_callService($images, 'imagefeatures', $cloud, $auth, $batch = true);
 	}
 
 	protected static function _callService($data, $service, $cloud = false, $auth = false, $batch = false)

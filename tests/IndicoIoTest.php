@@ -73,22 +73,47 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testSentimentReturnValueBetweenOneAndZero()
     {
-        $data = IndicoIo::sentiment('Obama is the USA president !!');
+        $data = IndicoIo::sentiment('Excited to be alive!');
         $this->assertGreaterThan(0, $data);
         $this->assertGreaterThan($data, 1);
     }
 
     public function testLanguageWhenGivenTheRightPrameters()
     {
-        $data = IndicoIo::language('bonsoir les jeunes !');
+        $data = IndicoIo::language('Clearly an english sentence.!');
         $keys_result = array_keys($data);
+        $this->assertEquals(count($keys_result), 33);
+    }
+
+    public function testBatchLanguage()
+    {
+        $examples = array('Clearly an english sentence.', 'Hablas espanol?');
+        $data = IndicoIo::batch_language($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $keys_result = array_keys($datapoint);
         $this->assertEquals(count($keys_result), 33);
     }
 
     public function testTextTags()
     {
-        $data = IndicoIo::text_tags('On Monday, president Barack Obama will be ...');
+        $data = IndicoIo::text_tags('On Monday, the president will be ...');
         $keys_result = array_keys($data);
+        $this->assertEquals(count($keys_result), 111);
+    }
+
+    public function testBatchTextTags()
+    {
+        $examples = array(
+            'On Monday, the president will be ...',
+            'We are in for a windy Thursday and a rainy Friday'
+        );
+        $data = IndicoIo::batch_text_tags($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $keys_result = array_keys($datapoint);
         $this->assertEquals(count($keys_result), 111);
     }
     
@@ -106,6 +131,25 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($humour_expected, $keys_result);
     }
 
+    public function testBatchFer()
+    {
+        $humour_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $examples = array($image, $image);
+
+        $data = IndicoIo::batch_fer($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $keys_result = array_keys($datapoint);
+
+        sort($keys_result);
+        sort($humour_expected);
+
+        $this->assertEquals($humour_expected, $keys_result);
+    }
+
     public function testFacialFeaturesWhenGivenTheRightParameters()
     {
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
@@ -115,13 +159,37 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($data), 48);
     }
 
+    public function testBatchFacialFeatures()
+    {
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $examples = array($image, $image);
+        $data = IndicoIo::batch_facial_features($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $this->assertEquals(count($datapoint), 48);
+    }
+
     public function testImageFeaturesWhenGivenTheRightParameters()
     {
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
-        $data = \IndicoIo\IndicoIo::image_features($image);
+        $data = IndicoIo::image_features($image);
 
         $this->assertEquals(count($data), 2048);
+    }
+
+    public function testBatchImageFeatures()
+    {
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $examples = array($image, $image);
+        $data = IndicoIo::batch_image_features($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $this->assertEquals(count($datapoint), 2048);
     }
 
     public function testConfigureFromEnvironmentVariables() 
