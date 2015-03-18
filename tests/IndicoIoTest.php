@@ -70,6 +70,16 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('float', $data[0]);
     }
 
+    public function testExplicitAuthArgument() {
+        $examples = array('worst day ever', 'best day ever');
+        $auth = array(getenv("INDICO_USERNAME"), getenv("INDICO_PASSWORD"));
+        $data = IndicoIo::batch_sentiment($examples, $auth);
+
+        $this->assertEquals(count($data), count($examples));
+        $this->assertInternalType('array', $data);
+        $this->assertInternalType('float', $data[0]);
+    }
+
 
     public function testSentimentReturnValueBetweenOneAndZero()
     {

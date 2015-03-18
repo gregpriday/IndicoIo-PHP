@@ -26,82 +26,82 @@ class IndicoIo
 		return $url;
 	}
 
-	public static function political($text, $cloud = false, $auth = false)
+	public static function political($text, $auth = false, $cloud = false)
 	{
         return self::_callService($text, 'political', $cloud, $auth);
     }
 
-    public static function batch_political($text, $cloud = false, $auth = false) 
+    public static function batch_political($text, $auth = false, $cloud = false) 
     {
     	return self::_callService($text, 'political', $cloud, $auth, $batch = true);
     }
 
-	public static function sentiment($text, $cloud = false, $auth = false)
+	public static function sentiment($text, $auth = false, $cloud = false)
 	{
         return self::_callService($text, 'sentiment', $cloud, $auth);
 	}
 
-	public static function batch_sentiment($text, $cloud = false, $auth = false)
+	public static function batch_sentiment($text, $auth = false, $cloud = false)
 	{
         return self::_callService($text, 'sentiment', $cloud, $auth, $batch = true);
 	}
 
-	public static  function posneg($text, $cloud = false, $auth = false)
+	public static  function posneg($text, $auth = false, $cloud = false)
 	{
-		return self::sentiment($text, $cloud, $auth);
+		return self::sentiment($text, $auth, $cloud);
 	}
 
-	public static function batch_posneg($text, $cloud = false, $auth = false)
+	public static function batch_posneg($text, $auth = false, $cloud = false)
 	{
 		return self::sentiment($text, $cloud, $auth, $batch = true);
 	}
 
-	public static function language($text, $cloud = false, $auth = false)
+	public static function language($text, $auth = false, $cloud = false)
 	{
 		return self::_callService($text, 'language', $cloud, $auth);
 	}
 
-	public static function batch_language($text, $cloud = false, $auth = false)
+	public static function batch_language($text, $auth = false, $cloud = false)
 	{
 		return self::_callService($text, 'language', $cloud, $auth, $batch = true);
 	}
 
-	public static function text_tags($text, $cloud = false, $auth = false)
+	public static function text_tags($text, $auth = false, $cloud = false)
 	{
 		return self::_callService($text, 'texttags', $cloud, $auth);
 	}
 
-	public static function batch_text_tags($text, $cloud = false, $auth = false)
+	public static function batch_text_tags($text, $auth = false, $cloud = false)
 	{
 		return self::_callService($text, 'texttags', $cloud, $auth, $batch = true);
 	}
 
-	public static function fer($image, $cloud = false, $auth = false)
+	public static function fer($image, $auth = false, $cloud = false)
 	{
 		return self::_callService($image, 'fer', $cloud, $auth);
 	}
 
-	public static function batch_fer($images, $cloud = false, $auth = false)
+	public static function batch_fer($images, $auth = false, $cloud = false)
 	{
 		return self::_callService($images, 'fer', $cloud, $auth, $batch = true);
 	}
 
-	public static function facial_features($image, $cloud = false, $auth = false)
+	public static function facial_features($image, $auth = false, $cloud = false)
 	{
 		return self::_callService($image, 'facialfeatures', $auth);
 	}
 
-	public static function batch_facial_features($images, $cloud = false, $auth = false)
+	public static function batch_facial_features($images, $auth = false, $cloud = false)
 	{
 		return self::_callService($images, 'facialfeatures', $cloud, $auth, $batch = true);
 	}
 
-	public static function image_features($image, $cloud = false, $auth = false)
+	public static function image_features($image, $auth = false, $cloud = false)
 	{
 		return self::_callService($image, 'imagefeatures', $cloud, $auth);
 	}
 
-	public static function batch_image_features($images, $cloud = false, $auth = false)
+	public static function batch_image_features($images, $auth = false, $cloud = false)
 	{
 		return self::_callService($images, 'imagefeatures', $cloud, $auth, $batch = true);
 	}
