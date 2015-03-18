@@ -3,6 +3,10 @@
 namespace IndicoIo;
 use Exception;
 
+use Configure\Configure as Configure;
+
+require_once("Configure.php");
+
 /**
 * Simple PHP wrapper for Indico
 */
@@ -22,69 +26,6 @@ class IndicoIo
 		return $url;
 	}
 
-	public static function loadConfiguration() {
-		$config = array(
-			'default_host' => 'http://apiv1.indico.io',
-			'cloud' => false,
-			'auth' => false
-		);
-		if (array_key_exists('HOME', $_ENV)) {
-			$globalPath = $_ENV['HOME'] . '/.indicorc';
-			$config = $self::loadConfigFile($globalPath, $config);
-		}
-		$localPath = getcwd() . '/.indicorc';
-		$config = self::loadConfigFile($localPath, $config);
-		$config = self::loadEnvironmentVars($config);
-		return $config;
-	}
-
-	protected static function loadEnvironmentVars($indico_config) {
-		$authDefined = (
-			getenv('INDICO_USERNAME') &&
-			getenv('INDICO_PASSWORD')
-		);
-		if ($authDefined) {
-			$indico_config['auth'] = array(
-				getenv('INDICO_USERNAME'),
-				getenv('INDICO_PASSWORD')
-			);
-		}
-		if (getenv('INDICO_CLOUD')) {
-			$indico_config['cloud'] = getenv('INDICO_CLOUD');
-		}
-		return $indico_config;
-	}
-
-	protected static function loadConfigFile($configPath, $indico_config) {
-		if (file_exists($configPath)) {
-			$config = parse_ini_file($configPath);
-			if (!$config) {
-				return $indico_config;
-			}
-
-			$authDefined = (
-				array_key_exists('auth', $config) &&	
-				array_key_exists('username', $config['auth']) &&
-				array_key_exists('password', $config['auth'])
-			);
-			if ($authDefined) {
-				$indico_config['auth'] = array(
-					$config['auth']['username'],
-					$config['auth']['password']
-				);
-			}
-
-			$cloudDefined = (
-				array_key_exists('private_cloud', $config) &&
-				array_key_exists('cloud', $config['private_cloud'])
-			);
-			if ($cloudDefined) {
-				$indico_config['cloud'] = $config['private_cloud']['cloud'];
-			}
-		}
-		return $indico_config;
-	}
-
 	public static function political($text, $cloud = false, $auth = false)
 	{
         return self::_callService($text, 'political', $cloud, $auth);
@@ -92,7 +33,7 @@ class IndicoIo
 
     public static function batch_political($text, $cloud = false, $auth = false) 
     {
-    	return self::callService($text, 'political', $cloud, $auth, $batch = true);
+    	return self::_callService($text, 'political', $cloud, $auth, $batch = true);
     }
 
 	public static function sentiment($text, $cloud = false, $auth = false)
@@ -209,4 +150,4 @@ class IndicoIo
 	}
 }
 
-IndicoIo::$_options = IndicoIo::loadConfiguration();
+IndicoIo::$_options = Configure::loadConfiguration();

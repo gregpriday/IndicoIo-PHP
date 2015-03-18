@@ -1,6 +1,8 @@
 <?php 
 
 namespace IndicoIo\Test;
+use \IndicoIo\IndicoIo as IndicoIo;
+use Configure\Configure as Configure;
 
 class IndicoIoTest extends \PHPUnit_Framework_TestCase
 {
@@ -8,8 +10,24 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testPoliticalWhenGivenTheRightParameters()
     {
         $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
-        $data = \IndicoIo\IndicoIo::political('save the whales');
+        $data = IndicoIo::political('save the whales');
         $keys_result = array_keys($data);
+        
+        sort($keys_expected);
+        sort($keys_result);
+
+        $this->assertEquals($keys_expected, $keys_result);
+    }
+
+    public function testBatchPolitical() {
+        $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
+        $examples = array('save the whales', 'cut taxes');
+        $data = IndicoIo::batch_political($examples);
+
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $keys_result = array_keys($datapoint);
         
         sort($keys_expected);
         sort($keys_result);
@@ -23,7 +41,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
      */
     public function testPoliticalRaisesExceptionWhenGivenInteger()
     {
-        $data_integer_request = \IndicoIo\IndicoIo::political(2);
+        $data_integer_request = IndicoIo::political(2);
     }
 
     /**
@@ -32,73 +50,44 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
      */
     public function testPoliticalRaisesExceptionWhenGivenBool()
     {
-        $data_bool_request = \IndicoIo\IndicoIo::political(true);
+        $data_bool_request = IndicoIo::political(true);
     }
 
     public function testSentimentWhenGivenTheRightParameters()
     {
-        $data = \IndicoIo\IndicoIo::sentiment('whales suck');
+        $data = IndicoIo::sentiment('worst day ever');
 
         $this->assertInternalType('float', $data);
+    }
+
+    public function testBatchSentiment()
+    {
+        $examples = array('worst day ever', 'best day ever');
+        $data = IndicoIo::batch_sentiment($examples);
+
+        $this->assertEquals(count($data), count($examples));
+        $this->assertInternalType('array', $data);
+        $this->assertInternalType('float', $data[0]);
     }
 
 
     public function testSentimentReturnValueBetweenOneAndZero()
     {
-        $data = \IndicoIo\IndicoIo::sentiment('Obama is the USA president !!');
-        //$this->assertArrayHasKey('Sentiment', $data);
-        // The returned must be between 0 and 1.
+        $data = IndicoIo::sentiment('Obama is the USA president !!');
         $this->assertGreaterThan(0, $data);
         $this->assertGreaterThan($data, 1);
     }
 
     public function testLanguageWhenGivenTheRightPrameters()
     {
-        $expected_languages = array(
-            'English',
-            'Spanish',
-            'Tagalog',
-            'Esperanto',
-            'French',
-            'Chinese',
-            'French',
-            'Bulgarian',
-            'Latin',
-            'Slovak',
-            'Hebrew',
-            'Russian',
-            'German',
-            'Japanese',
-            'Korean',
-            'Portuguese',
-            'Italian',
-            'Polish',
-            'Turkish',
-            'Dutch',
-            'Arabic',
-            'Persian (Farsi)',
-            'Czech',
-            'Swedish',
-            'Indonesian',
-            'Vietnamese',
-            'Romanian',
-            'Greek',
-            'Danish',
-            'Hungarian',
-            'Thai',
-            'Finnish',
-            'Norwegian',
-            'Lithuanian'
-        );
-
-        $data = \IndicoIo\IndicoIo::language('bonsoir les jeunes !');
+        $data = IndicoIo::language('bonsoir les jeunes !');
         $keys_result = array_keys($data);
         $this->assertEquals(count($keys_result), 33);
     }
 
     public function testTextTags()
     {
-        $data = \IndicoIo\IndicoIo::text_tags('On Monday, president Barack Obama will be ...');
+        $data = IndicoIo::text_tags('On Monday, president Barack Obama will be ...');
         $keys_result = array_keys($data);
         $this->assertEquals(count($keys_result), 111);
     }
@@ -108,7 +97,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $humour_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
-        $data = \IndicoIo\IndicoIo::fer($image);
+        $data = IndicoIo::fer($image);
         $keys_result = array_keys($data);
 
         sort($keys_result);
@@ -121,7 +110,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     {
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
-        $data = \IndicoIo\IndicoIo::facial_features($image);
+        $data = IndicoIo::facial_features($image);
 
         $this->assertEquals(count($data), 48);
     }
@@ -133,5 +122,73 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $data = \IndicoIo\IndicoIo::image_features($image);
 
         $this->assertEquals(count($data), 2048);
+    }
+
+    public function testConfigureFromEnvironmentVariables() 
+    {
+        # store previous settings to reset later
+        $prev_username = getenv("INDICO_USERNAME");
+        $prev_password = getenv("INDICO_PASSWORD");
+
+        $username = "env-username";
+        $password = "env-password";
+        putenv("INDICO_USERNAME=$username");
+        putenv("INDICO_PASSWORD=$password");
+
+        $config = Configure::loadConfiguration();
+        $this->assertEquals($config['auth'][0], $username);
+        $this->assertEquals($config['auth'][1], $password);
+
+        # reset to previous configuration
+        putenv("INDICO_USERNAME=$prev_username");
+        putenv("INDICO_PASSWORD=$prev_password");
+    }
+
+    public function testConfigureFromConfigFile()
+    {
+        $filename = tempnam("./", 'tmp');
+        $handle = fopen($filename, "w");
+        $username = "file-username";
+        $password = "file-password";
+        fwrite($handle, "[auth]\nusername=$username\npassword=$password");
+        fclose($handle);
+
+        $config = IndicoIo::$_options;
+        $config = Configure::loadConfigFile($filename, $config);
+        $this->assertEquals($config['auth'][0], $username);
+        $this->assertEquals($config['auth'][1], $password);
+
+        # cleanup
+        unlink($filename);
+    }
+
+    public function testEnvironmentVariablesTakePrecedence()
+    {
+        # store previous settings to reset later
+        $prev_username = getenv("INDICO_USERNAME");
+        $prev_password = getenv("INDICO_PASSWORD");
+
+        $env_username = "env-username";
+        $env_password = "env-password";
+        putenv("INDICO_USERNAME=$env_username");
+        putenv("INDICO_PASSWORD=$env_password");
+
+        $filename = tempnam("./", 'tmp');
+        $handle = fopen($filename, "w");
+        $username = "file-username";
+        $password = "file-password";
+        fwrite($handle, "[auth]\nusername=$username\npassword=$password");
+        fclose($handle);
+
+        $config = IndicoIo::$_options;
+        $config = Configure::loadConfigFile($filename, $config);
+        $config = Configure::loadEnvironmentVars($config);
+        $this->assertEquals($config['auth'][0], $env_username);
+        $this->assertEquals($config['auth'][1], $env_password);
+
+        # reset to previous configuration
+        putenv("INDICO_USERNAME=$prev_username");
+        putenv("INDICO_PASSWORD=$prev_password");
+        unlink($filename);
     }
 }
