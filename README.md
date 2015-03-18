@@ -17,9 +17,7 @@ Installation
 ```json
 {
 	"require":{
-	    ...
 		"indicoio/indicoio-php": "*"
-		...
 	}
 }
 
@@ -41,7 +39,11 @@ Usage
 ```php
 
 require(__DIR__ . '/vendor/autoload.php');
+<<<<<<< HEAD
 use \IndicoIo\IndicoIo as IndicoIo
+=======
+use \IndicoIo\IndicoIo as IndicoIo;
+>>>>>>> f66b3af... Update README.md
 
 print_r(IndicoIo::sentiment('I love you  !'));
 

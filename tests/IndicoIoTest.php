@@ -80,16 +80,16 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testFerWhenGivenTheRightParameters()
     {
-        $humour_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
+        $keys_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
         $data = IndicoIo::fer($image);
         $keys_result = array_keys($data);
 
         sort($keys_result);
-        sort($humour_expected);
+        sort($keys_expected);
 
-        $this->assertEquals($humour_expected, $keys_result);
+        $this->assertEquals($keys_expected, $keys_result);
     }
 
     public function testFacialFeaturesWhenGivenTheRightParameters()
@@ -179,7 +179,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testBatchFer()
     {
         self::skipIfMissingCredentials();
-        $humour_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
+        $keys_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
         $examples = array($image, $image);
@@ -191,9 +191,9 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $keys_result = array_keys($datapoint);
 
         sort($keys_result);
-        sort($humour_expected);
+        sort($keys_expected);
 
-        $this->assertEquals($humour_expected, $keys_result);
+        $this->assertEquals($keys_expected, $keys_result);
     }
 
     public function testBatchFacialFeatures()
