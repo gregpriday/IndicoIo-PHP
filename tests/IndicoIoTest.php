@@ -6,28 +6,25 @@ use Configure\Configure as Configure;
 
 class IndicoIoTest extends \PHPUnit_Framework_TestCase
 {
+    private function skipIfMissingCredentials() 
+    {
+        if (!IndicoIo::$_options['auth']) {
+            $this->markTestSkipped('No auth credentials provided, skipping batch tests...');
+        }
+    }
+
+    private function skipIfMissingEnvironmentVars()
+    {
+        if (!getenv("INDICO_USERNAME") || ! getenv("INDICO_PASSWORD")) {
+            $this->markTestSkipped('No auth credentials provided, skipping batch tests...');
+        }
+    }
 
     public function testPoliticalWhenGivenTheRightParameters()
     {
         $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
         $data = IndicoIo::political('save the whales');
         $keys_result = array_keys($data);
-        
-        sort($keys_expected);
-        sort($keys_result);
-
-        $this->assertEquals($keys_expected, $keys_result);
-    }
-
-    public function testBatchPolitical() {
-        $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
-        $examples = array('save the whales', 'cut taxes');
-        $data = IndicoIo::batch_political($examples);
-
-        $this->assertEquals(count($data), count($examples));
-
-        $datapoint = $data[0];
-        $keys_result = array_keys($datapoint);
         
         sort($keys_expected);
         sort($keys_result);
@@ -60,27 +57,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('float', $data);
     }
 
-    public function testBatchSentiment()
-    {
-        $examples = array('worst day ever', 'best day ever');
-        $data = IndicoIo::batch_sentiment($examples);
-
-        $this->assertEquals(count($data), count($examples));
-        $this->assertInternalType('array', $data);
-        $this->assertInternalType('float', $data[0]);
-    }
-
-    public function testExplicitAuthArgument() {
-        $examples = array('worst day ever', 'best day ever');
-        $auth = array(getenv("INDICO_USERNAME"), getenv("INDICO_PASSWORD"));
-        $data = IndicoIo::batch_sentiment($examples, $auth);
-
-        $this->assertEquals(count($data), count($examples));
-        $this->assertInternalType('array', $data);
-        $this->assertInternalType('float', $data[0]);
-    }
-
-
     public function testSentimentReturnValueBetweenOneAndZero()
     {
         $data = IndicoIo::sentiment('Excited to be alive!');
@@ -95,17 +71,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($keys_result), 33);
     }
 
-    public function testBatchLanguage()
-    {
-        $examples = array('Clearly an english sentence.', 'Hablas espanol?');
-        $data = IndicoIo::batch_language($examples);
-        $this->assertEquals(count($data), count($examples));
-
-        $datapoint = $data[0];
-        $keys_result = array_keys($datapoint);
-        $this->assertEquals(count($keys_result), 33);
-    }
-
     public function testTextTags()
     {
         $data = IndicoIo::text_tags('On Monday, the president will be ...');
@@ -113,20 +78,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($keys_result), 111);
     }
 
-    public function testBatchTextTags()
-    {
-        $examples = array(
-            'On Monday, the president will be ...',
-            'We are in for a windy Thursday and a rainy Friday'
-        );
-        $data = IndicoIo::batch_text_tags($examples);
-        $this->assertEquals(count($data), count($examples));
-
-        $datapoint = $data[0];
-        $keys_result = array_keys($datapoint);
-        $this->assertEquals(count($keys_result), 111);
-    }
-    
     public function testFerWhenGivenTheRightParameters()
     {
         $humour_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
@@ -141,8 +92,93 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($humour_expected, $keys_result);
     }
 
+    public function testFacialFeaturesWhenGivenTheRightParameters()
+    {
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $data = IndicoIo::facial_features($image);
+
+        $this->assertEquals(count($data), 48);
+    }
+
+    public function testImageFeaturesWhenGivenTheRightParameters()
+    {
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $data = IndicoIo::image_features($image);
+
+        $this->assertEquals(count($data), 2048);
+    }
+
+    public function testExplicitAuthArgument() {
+        self::skipIfMissingEnvironmentVars(); 
+        $examples = array('worst day ever', 'best day ever');
+        $auth = array(getenv("INDICO_USERNAME"), getenv("INDICO_PASSWORD"));
+        $data = IndicoIo::batch_sentiment($examples, $auth);
+
+        $this->assertEquals(count($data), count($examples));
+        $this->assertInternalType('array', $data);
+        $this->assertInternalType('float', $data[0]);
+    }
+
+    public function testBatchPolitical() {
+        self::skipIfMissingCredentials();       
+        $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
+        $examples = array('save the whales', 'cut taxes');
+        $data = IndicoIo::batch_political($examples);
+
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $keys_result = array_keys($datapoint);
+        
+        sort($keys_expected);
+        sort($keys_result);
+
+        $this->assertEquals($keys_expected, $keys_result);
+    }
+
+    public function testBatchSentiment()
+    {
+        self::skipIfMissingCredentials();       
+        $examples = array('worst day ever', 'best day ever');
+        $data = IndicoIo::batch_sentiment($examples);
+
+        $this->assertEquals(count($data), count($examples));
+        $this->assertInternalType('array', $data);
+        $this->assertInternalType('float', $data[0]);
+    }
+
+    public function testBatchLanguage()
+    {
+        self::skipIfMissingCredentials();
+        $examples = array('Clearly an english sentence.', 'Hablas espanol?');
+        $data = IndicoIo::batch_language($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $keys_result = array_keys($datapoint);
+        $this->assertEquals(count($keys_result), 33);
+    }
+
+    public function testBatchTextTags()
+    {
+        self::skipIfMissingCredentials();
+        $examples = array(
+            'On Monday, the president will be ...',
+            'We are in for a windy Thursday and a rainy Friday'
+        );
+        $data = IndicoIo::batch_text_tags($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $keys_result = array_keys($datapoint);
+        $this->assertEquals(count($keys_result), 111);
+    }
+
     public function testBatchFer()
     {
+        self::skipIfMissingCredentials();
         $humour_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
@@ -160,17 +196,9 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($humour_expected, $keys_result);
     }
 
-    public function testFacialFeaturesWhenGivenTheRightParameters()
-    {
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
-        $data = IndicoIo::facial_features($image);
-
-        $this->assertEquals(count($data), 48);
-    }
-
     public function testBatchFacialFeatures()
     {
+        self::skipIfMissingCredentials();
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
         $examples = array($image, $image);
@@ -181,17 +209,9 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($datapoint), 48);
     }
 
-    public function testImageFeaturesWhenGivenTheRightParameters()
-    {
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
-        $data = IndicoIo::image_features($image);
-
-        $this->assertEquals(count($data), 2048);
-    }
-
     public function testBatchImageFeatures()
     {
+        self::skipIfMissingCredentials();
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
         $examples = array($image, $image);
