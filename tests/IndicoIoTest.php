@@ -17,16 +17,22 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($keys_expected, $keys_result);
     }
 
-    public function testPoliticalReturnFullErrorMsgWhenGivenIntegerORBool()
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage Input must be text.
+     */
+    public function testPoliticalRaisesExceptionWhenGivenInteger()
     {
         $data_integer_request = \IndicoIo\IndicoIo::political(2);
-        $data_bool_request    = \IndicoIo\IndicoIo::political(true);
-        
-        $this->assertArrayHasKey('error', $data_integer_request);
-        $this->assertGreaterThan(0, strlen($data_integer_request['error']));
+    }
 
-        $this->assertArrayHasKey('error', $data_bool_request);
-        $this->assertGreaterThan(0, strlen($data_bool_request['error']));
+    /**
+     * @expectedException Exception
+     * @expectedExceptionMessage Input must be text.
+     */
+    public function testPoliticalRaisesExceptionWhenGivenBool()
+    {
+        $data_bool_request = \IndicoIo\IndicoIo::political(true);
     }
 
     public function testSentimentWhenGivenTheRightParameters()
@@ -87,11 +93,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
         $data = \IndicoIo\IndicoIo::language('bonsoir les jeunes !');
         $keys_result = array_keys($data);
-
-        sort($expected_languages);
-        sort($keys_result);
-
-        $this->assertEmpty(array_diff($expected_languages, $keys_result));
+        $this->assertEquals(count($keys_result), 33);
     }
 
     public function testTextTags()
