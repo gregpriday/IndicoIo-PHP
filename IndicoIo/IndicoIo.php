@@ -48,27 +48,27 @@ class IndicoIo
 
 	protected static function _callService($name_to_post, $data, $service)
 	{
-		$context = stream_context_create(array(
-			'http' => array(
-				'method' => 'POST',
-				'header' => 'Content-Type: application/json',
-				'content' => json_encode(array($name_to_post => $data))
-			)
-		));
-
 		$query_url = self::$_options['default_host']."/$service";
-		$result = file_get_contents($query_url, false, $context);
-		$parsed = self::_parseAnswer($result);
+		$json_data = json_encode(array($name_to_post => $data));
+
+		$ch = curl_init($query_url);                                                                      
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);                                                                  
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
+		    'Content-Type: application/json',                                                                                
+		    'Content-Length: ' . strlen($json_data))                                                                       
+		);    
+
+		$result = curl_exec($ch); 
+		curl_close($ch); 
+
+		$parsed = json_decode($result, $assoc = true);
 		if(array_key_exists('results', $parsed)){
             return $parsed['results'];
         }
         else {
             return $parsed;
         }
-	}
-
-	protected static function _parseAnswer($data, $returnArray=true)
-	{
-		return json_decode($data, $returnArray);
 	}
 }

@@ -96,24 +96,9 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testTextTags()
     {
-        $keys_expected = array('fashion', 'art', 'energy', 'economics', 'entrepreneur', 
-                               'books', 'politics', 'gardening', 'nba', 'conservative', 
-                               'technology', 'startups', 'relationships', 'education',
-                               'humor', 'psychology', 'bicycling', 'investing', 'travel',
-                               'cooking', 'christianity', 'environment', 'religion', 'health', 
-                               'hockey', 'pets', 'music', 'soccer', 'guns', 'gaming', 'jobs',
-                               'business', 'nature', 'food', 'cars', 'photography', 'philosophy',
-                               'geek', 'sports', 'baseball', 'news', 'television', 'entertainment',
-                               'parenting', 'comics', 'science', 'nfl','programming',
-                               'personalfinance', 'atheism', 'movies', 'anime', 'fitness',
-                               'military', 'realestate', 'history');
         $data = \IndicoIo\IndicoIo::text_tags('On Monday, president Barack Obama will be ...');
         $keys_result = array_keys($data);
-        
-        sort($keys_expected);
-        sort($keys_result);
-
-        $this->assertEquals($keys_expected, $keys_result);
+        $this->assertEquals(count($keys_result), 111);
     }
     
     public function testFerWhenGivenTheRightParameters()
