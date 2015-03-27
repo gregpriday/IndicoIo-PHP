@@ -39,16 +39,20 @@ Usage
 ```php
 
 require(__DIR__ . '/vendor/autoload.php');
-
 use \IndicoIo\IndicoIo as IndicoIo;
 
-print_r(IndicoIo::sentiment('I love you  !'));
+print_r(IndicoIo::sentiment('Great food -- would recommend!'));
 
-=> Array ( [Sentiment] => 0.46532170063496 )
+=> Array ( [Sentiment] => 0.86122900137512 ) 
 
-print_r(IndicoIo::political('Obama is the US president !') );
+print_r(IndicoIo::political('Free market economy'));
 
-=> Array ( [Libertarian] => 0.29189946558241 [Liberal] => 0.010490688696418 [Green] => 0.0110258933524 [Conservative] => 0.68658395236877 ) 
+=> Array (
+    [Libertarian] => 0.73124401007546
+    [Liberal] => 0.027743022226388
+    [Green] => 0.045547383056822
+    [Conservative] => 0.19546558464133
+)
 
 print_r(IndicoIo::language('una giornata molto buona auguro') );
 
@@ -61,16 +65,14 @@ print_r(IndicoIo::text_tags('This coconut green tea is amazing!'));
 
 ``` 
 
-Batch API Access
+Batch API
 ----------------
 
-If you'd like to use our batch api interface, please check out the [pricing page](https://indico.io/pricing) on our website to find the right plan for you.
-
 ```
-IndicoIo::batch_sentiment(array('Text to analyze', 'More text'), array("example@example.com", "********"))
+IndicoIo::batch_sentiment(array('Text to analyze', 'More text'), 'example-api-key')
 ```
 
-Authentication credentials can also be set as the environment variables `$INDICO_USERNAME` and `$INDICO_PASSWORD` or as `username` and `password` in the indicorc file.
+API key credentials can also be set as the environment variable `$INDICO_API_KEY` or as `api_key` in the indicorc file.
 
 Private cloud API Access
 ------------------------
@@ -78,7 +80,7 @@ Private cloud API Access
 If you're looking to use indico's API for high throughput applications, please check out the [pricing page](https://indico.io/pricing) on our website to find the right plan for you.
 
 ```
-IndicoIo::sentiment("Text to analyze", array("example@example.com", "********"), "example-cloud")
+IndicoIo::sentiment("Text to analyze", "example-api-key", "example-cloud")
 ```
 
 The third `cloud` parameter redirects API calls to your private cloud hosted at `[cloud].indico.domains` 
@@ -95,8 +97,7 @@ Here is an example of a valid indicorc file:
 
 ```
 [auth]
-username = test@example.com
-password = secret
+api_key = example-api-key
 
 [private_cloud]
 cloud = example
@@ -106,8 +107,7 @@ Environment variables take precedence over any configuration found in the indico
 The following environment variables are valid:
 
 ```
-$INDICO_USERNAME
-$INDICO_PASSWORD
+$INDICO_API_KEY
 $INDICO_CLOUD
 ```
 

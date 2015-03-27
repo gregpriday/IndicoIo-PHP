@@ -8,20 +8,21 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 {
     private function skipIfMissingCredentials() 
     {
-        if (!IndicoIo::$_options['auth']) {
+        if (!IndicoIo::$config['api_key']) {
             $this->markTestSkipped('No auth credentials provided, skipping batch tests...');
         }
     }
 
     private function skipIfMissingEnvironmentVars()
     {
-        if (!getenv("INDICO_USERNAME") || ! getenv("INDICO_PASSWORD")) {
+        if (!getenv("INDICO_API_KEY")) {
             $this->markTestSkipped('No auth credentials provided, skipping batch tests...');
         }
     }
 
     public function testPoliticalWhenGivenTheRightParameters()
     {
+        self::skipIfMissingCredentials();
         $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
         $data = IndicoIo::political('save the whales');
         $keys_result = array_keys($data);
@@ -38,6 +39,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
      */
     public function testPoliticalRaisesExceptionWhenGivenInteger()
     {
+        self::skipIfMissingCredentials();
         $data_integer_request = IndicoIo::political(2);
     }
 
@@ -47,11 +49,13 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
      */
     public function testPoliticalRaisesExceptionWhenGivenBool()
     {
+        self::skipIfMissingCredentials();
         $data_bool_request = IndicoIo::political(true);
     }
 
     public function testSentimentWhenGivenTheRightParameters()
     {
+        self::skipIfMissingCredentials();
         $data = IndicoIo::sentiment('worst day ever');
 
         $this->assertInternalType('float', $data);
@@ -59,6 +63,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testSentimentReturnValueBetweenOneAndZero()
     {
+        self::skipIfMissingCredentials();
         $data = IndicoIo::sentiment('Excited to be alive!');
         $this->assertGreaterThan(0, $data);
         $this->assertGreaterThan($data, 1);
@@ -66,6 +71,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testLanguageWhenGivenTheRightPrameters()
     {
+        self::skipIfMissingCredentials();
         $data = IndicoIo::language('Clearly an english sentence.!');
         $keys_result = array_keys($data);
         $this->assertEquals(count($keys_result), 33);
@@ -73,6 +79,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testTextTags()
     {
+        self::skipIfMissingCredentials();
         $data = IndicoIo::text_tags('On Monday, the president will be ...');
         $keys_result = array_keys($data);
         $this->assertEquals(count($keys_result), 111);
@@ -80,6 +87,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testFerWhenGivenTheRightParameters()
     {
+        self::skipIfMissingCredentials();
         $keys_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
@@ -94,6 +102,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testFacialFeaturesWhenGivenTheRightParameters()
     {
+        self::skipIfMissingCredentials();
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
         $data = IndicoIo::facial_features($image);
@@ -103,6 +112,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testImageFeaturesWhenGivenTheRightParameters()
     {
+        self::skipIfMissingCredentials();
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
         $data = IndicoIo::image_features($image);
@@ -113,8 +123,8 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testExplicitAuthArgument() {
         self::skipIfMissingEnvironmentVars(); 
         $examples = array('worst day ever', 'best day ever');
-        $auth = array(getenv("INDICO_USERNAME"), getenv("INDICO_PASSWORD"));
-        $data = IndicoIo::batch_sentiment($examples, $auth);
+        $api_key = getenv("INDICO_API_KEY");
+        $data = IndicoIo::batch_sentiment($examples, $api_key);
 
         $this->assertEquals(count($data), count($examples));
         $this->assertInternalType('array', $data);
@@ -225,36 +235,28 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testConfigureFromEnvironmentVariables() 
     {
         # store previous settings to reset later
-        $prev_username = getenv("INDICO_USERNAME");
-        $prev_password = getenv("INDICO_PASSWORD");
-
-        $username = "env-username";
-        $password = "env-password";
-        putenv("INDICO_USERNAME=$username");
-        putenv("INDICO_PASSWORD=$password");
+        $prev_api_key = getenv("INDICO_API_KEY");
+        $api_key = "env-api-key";
+        putenv("INDICO_API_KEY=$api_key");
 
         $config = Configure::loadConfiguration();
-        $this->assertEquals($config['auth'][0], $username);
-        $this->assertEquals($config['auth'][1], $password);
+        $this->assertEquals($config['api_key'], $api_key);
 
         # reset to previous configuration
-        putenv("INDICO_USERNAME=$prev_username");
-        putenv("INDICO_PASSWORD=$prev_password");
+        putenv("INDICO_API_KEY=$prev_api_key");
     }
 
     public function testConfigureFromConfigFile()
     {
         $filename = tempnam("./", 'tmp');
         $handle = fopen($filename, "w");
-        $username = "file-username";
-        $password = "file-password";
-        fwrite($handle, "[auth]\nusername=$username\npassword=$password");
+        $api_key = "file-api-key";
+        fwrite($handle, "[auth]\napi_key=$api_key");
         fclose($handle);
 
-        $config = IndicoIo::$_options;
+        $config = IndicoIo::$config;
         $config = Configure::loadConfigFile($filename, $config);
-        $this->assertEquals($config['auth'][0], $username);
-        $this->assertEquals($config['auth'][1], $password);
+        $this->assertEquals($config['api_key'], $api_key);
 
         # cleanup
         unlink($filename);
@@ -263,30 +265,24 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testEnvironmentVariablesTakePrecedence()
     {
         # store previous settings to reset later
-        $prev_username = getenv("INDICO_USERNAME");
-        $prev_password = getenv("INDICO_PASSWORD");
+        $prev_api_key = getenv("INDICO_API_KEY");
 
-        $env_username = "env-username";
-        $env_password = "env-password";
-        putenv("INDICO_USERNAME=$env_username");
-        putenv("INDICO_PASSWORD=$env_password");
+        $env_api_key = "env-api-key";
+        putenv("INDICO_API_KEY=$env_api_key");
 
         $filename = tempnam("./", 'tmp');
         $handle = fopen($filename, "w");
-        $username = "file-username";
-        $password = "file-password";
-        fwrite($handle, "[auth]\nusername=$username\npassword=$password");
+        $api_key = "file-api-key";
+        fwrite($handle, "[auth]\napi_key=$api_key");
         fclose($handle);
 
-        $config = IndicoIo::$_options;
+        $config = IndicoIo::$config;
         $config = Configure::loadConfigFile($filename, $config);
         $config = Configure::loadEnvironmentVars($config);
-        $this->assertEquals($config['auth'][0], $env_username);
-        $this->assertEquals($config['auth'][1], $env_password);
+        $this->assertEquals($config['api_key'], $env_api_key);
 
         # reset to previous configuration
-        putenv("INDICO_USERNAME=$prev_username");
-        putenv("INDICO_PASSWORD=$prev_password");
+        putenv("INDICO_API_KEY=$prev_api_key");
         unlink($filename);
     }
 }
