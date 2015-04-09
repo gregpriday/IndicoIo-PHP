@@ -68,7 +68,7 @@ print_r(IndicoIo::text_tags('This coconut green tea is amazing!'));
 Batch API
 ----------------
 
-```
+```php
 IndicoIo::batch_sentiment(array('Text to analyze', 'More text'), 'example-api-key')
 ```
 
@@ -79,7 +79,7 @@ Private cloud API Access
 
 If you're looking to use indico's API for high throughput applications, please check out the [pricing page](https://indico.io/pricing) on our website to find the right plan for you.
 
-```
+```php
 IndicoIo::sentiment("Text to analyze", "example-api-key", "example-cloud")
 ```
 
