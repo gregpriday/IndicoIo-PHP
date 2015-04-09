@@ -12,103 +12,116 @@ require_once("Configure.php");
 */
 class IndicoIo
 {
-	public static $_options;
+	public static $config;
 
-	protected static function api_url($cloud = false, $service, $batch = false) {
+	protected static function api_url($cloud = false, $service, $batch = false, $api_key) {
 		if ($cloud) {
 			$root_url = "http://$cloud.indico.domains";
 		}
-		$root_url = self::$_options['default_host'];
+		if (!$api_key) {
+			throw new Exception("A valid API key must be provided.");
+		}
+		$root_url = self::$config['default_host'];
 		$url = "$root_url/$service";
 		if ($batch) {
 			$url = $url . "/batch";
 		}
+
+		$url = $url . "?key=" . $api_key;
 		return $url;
 	}
 
-	public static function political($text, $auth = false, $cloud = false)
+	public static function political($text, $api_key = false, $cloud = false)
 	{
-        return self::_callService($text, 'political', $cloud, $auth);
+        return self::_callService($text, 'political', $cloud, $api_key);
     }
 
-    public static function batch_political($text, $auth = false, $cloud = false) 
+    public static function batch_political($text, $api_key = false, $cloud = false) 
     {
-    	return self::_callService($text, 'political', $cloud, $auth, $batch = true);
+    	return self::_callService($text, 'political', $cloud, $api_key, $batch = true);
     }
 
-	public static function sentiment($text, $auth = false, $cloud = false)
+	public static function sentiment($text, $api_key = false, $cloud = false)
 	{
-        return self::_callService($text, 'sentiment', $cloud, $auth);
+        return self::_callService($text, 'sentiment', $cloud, $api_key);
 	}
 
-	public static function batch_sentiment($text, $auth = false, $cloud = false)
+	public static function batch_sentiment($text, $api_key = false, $cloud = false)
 	{
-        return self::_callService($text, 'sentiment', $cloud, $auth, $batch = true);
+        return self::_callService($text, 'sentiment', $cloud, $api_key, $batch = true);
 	}
 
-	public static  function posneg($text, $auth = false, $cloud = false)
+	public static  function posneg($text, $api_key = false, $cloud = false)
 	{
-		return self::sentiment($text, $auth, $cloud);
+		return self::sentiment($text, $api_key, $cloud);
 	}
 
-	public static function batch_posneg($text, $auth = false, $cloud = false)
+	public static function batch_posneg($text, $api_key = false, $cloud = false)
 	{
-		return self::sentiment($text, $cloud, $auth, $batch = true);
+		return self::sentiment($text, $cloud, $api_key, $batch = true);
 	}
 
-	public static function language($text, $auth = false, $cloud = false)
+	public static function language($text, $api_key = false, $cloud = false)
 	{
-		return self::_callService($text, 'language', $cloud, $auth);
+		return self::_callService($text, 'language', $cloud, $api_key);
 	}
 
-	public static function batch_language($text, $auth = false, $cloud = false)
+	public static function batch_language($text, $api_key = false, $cloud = false)
 	{
-		return self::_callService($text, 'language', $cloud, $auth, $batch = true);
+		return self::_callService($text, 'language', $cloud, $api_key, $batch = true);
 	}
 
-	public static function text_tags($text, $auth = false, $cloud = false)
+	public static function text_tags($text, $api_key = false, $cloud = false)
 	{
-		return self::_callService($text, 'texttags', $cloud, $auth);
+		return self::_callService($text, 'texttags', $cloud, $api_key);
 	}
 
-	public static function batch_text_tags($text, $auth = false, $cloud = false)
+	public static function batch_text_tags($text, $api_key = false, $cloud = false)
 	{
-		return self::_callService($text, 'texttags', $cloud, $auth, $batch = true);
+		return self::_callService($text, 'texttags', $cloud, $api_key, $batch = true);
 	}
 
-	public static function fer($image, $auth = false, $cloud = false)
+	public static function fer($image, $api_key = false, $cloud = false)
 	{
-		return self::_callService($image, 'fer', $cloud, $auth);
+		return self::_callService($image, 'fer', $cloud, $api_key);
 	}
 
-	public static function batch_fer($images, $auth = false, $cloud = false)
+	public static function batch_fer($images, $api_key = false, $cloud = false)
 	{
-		return self::_callService($images, 'fer', $cloud, $auth, $batch = true);
+		return self::_callService($images, 'fer', $cloud, $api_key, $batch = true);
 	}
 
-	public static function facial_features($image, $auth = false, $cloud = false)
+	public static function facial_features($image, $api_key = false, $cloud = false)
 	{
-		return self::_callService($image, 'facialfeatures', $auth);
+		return self::_callService($image, 'facialfeatures', $api_key);
 	}
 
-	public static function batch_facial_features($images, $auth = false, $cloud = false)
+	public static function batch_facial_features($images, $api_key = false, $cloud = false)
 	{
-		return self::_callService($images, 'facialfeatures', $cloud, $auth, $batch = true);
+		return self::_callService($images, 'facialfeatures', $cloud, $api_key, $batch = true);
 	}
 
-	public static function image_features($image, $auth = false, $cloud = false)
+	public static function image_features($image, $api_key = false, $cloud = false)
 	{
-		return self::_callService($image, 'imagefeatures', $cloud, $auth);
+		return self::_callService($image, 'imagefeatures', $cloud, $api_key);
 	}
 
-	public static function batch_image_features($images, $auth = false, $cloud = false)
+	public static function batch_image_features($images, $api_key = false, $cloud = false)
 	{
-		return self::_callService($images, 'imagefeatures', $cloud, $auth, $batch = true);
+		return self::_callService($images, 'imagefeatures', $cloud, $api_key, $batch = true);
 	}
 
-	protected static function _callService($data, $service, $cloud = false, $auth = false, $batch = false)
+	protected static function _callService($data, $service, $cloud = false, $api_key = false, $batch = false)
 	{
-		$query_url = self::api_url($cloud, $service, $batch);
+		# Load from configuration array if present
+		if (!$api_key) {
+			$api_key = self::$config['api_key'];
+		} 
+		if (!$cloud) {
+			$cloud = self::$config['cloud'];
+		}
+
+		$query_url = self::api_url($cloud, $service, $batch, $api_key);
 		$json_data = json_encode(array('data' => $data));
 
 		$ch = curl_init($query_url);                                                                      
@@ -119,22 +132,6 @@ class IndicoIo
 		    'Content-Type: application/json',                                                                                
 		    'Content-Length: ' . strlen($json_data))                                                                       
 		);    
-
-		# Load from configuration array if present
-		if (!$auth) {
-			$auth = self::$_options['auth'];
-		} 
-		if (!$cloud) {
-			$cloud = self::$_options['cloud'];
-		}
-
-		# Use HTTP Basic Auth if batch method or private cloud is used
-		if ($batch || $cloud) {
-			if (count($auth) != 2) {
-				throw new Exception("Username and password must be provided");
-			}
-			curl_setopt($ch, CURLOPT_USERPWD, $auth[0] . ":" . $auth[1]);
-		}
 
 		$result = curl_exec($ch); 
 		curl_close($ch); 
@@ -150,4 +147,4 @@ class IndicoIo
 	}
 }
 
-IndicoIo::$_options = Configure::loadConfiguration();
+IndicoIo::$config = Configure::loadConfiguration();

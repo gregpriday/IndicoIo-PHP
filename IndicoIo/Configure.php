@@ -6,9 +6,9 @@ Class Configure
 {
     public static function loadConfiguration() {
         $config = array(
-            'default_host' => 'http://apiv1.indico.io',
+            'default_host' => 'https://apiv2.indico.io',
             'cloud' => false,
-            'auth' => false
+            'api_key' => false
         );
         if (array_key_exists('HOME', $_ENV)) {
             $globalPath = $_ENV['HOME'] . '/.indicorc';
@@ -21,15 +21,8 @@ Class Configure
     }
 
     public static function loadEnvironmentVars($indico_config) {
-        $authDefined = (
-            getenv('INDICO_USERNAME') &&
-            getenv('INDICO_PASSWORD')
-        );
-        if ($authDefined) {
-            $indico_config['auth'] = array(
-                getenv('INDICO_USERNAME'),
-                getenv('INDICO_PASSWORD')
-            );
+        if (getenv('INDICO_API_KEY')) {
+            $indico_config['api_key'] = getenv('INDICO_API_KEY');
         }
         if (getenv('INDICO_CLOUD')) {
             $indico_config['cloud'] = getenv('INDICO_CLOUD');
@@ -46,14 +39,10 @@ Class Configure
 
             $authDefined = (
                 array_key_exists('auth', $parsed_config) &&    
-                array_key_exists('username', $parsed_config['auth']) &&
-                array_key_exists('password', $parsed_config['auth'])
+                array_key_exists('api_key', $parsed_config['auth'])
             );
             if ($authDefined) {
-                $config['auth'] = array(
-                    $parsed_config['auth']['username'],
-                    $parsed_config['auth']['password']
-                );
+                $config['api_key'] = $parsed_config['auth']['api_key'];
             }
 
             $cloudDefined = (
