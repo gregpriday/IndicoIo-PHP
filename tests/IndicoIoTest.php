@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace IndicoIo\Test;
 use \IndicoIo\IndicoIo as IndicoIo;
@@ -6,7 +6,7 @@ use Configure\Configure as Configure;
 
 class IndicoIoTest extends \PHPUnit_Framework_TestCase
 {
-    private function skipIfMissingCredentials() 
+    private function skipIfMissingCredentials()
     {
         if (!IndicoIo::$config['api_key']) {
             $this->markTestSkipped('No auth credentials provided, skipping batch tests...');
@@ -26,7 +26,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
         $data = IndicoIo::political('save the whales');
         $keys_result = array_keys($data);
-        
+
         sort($keys_expected);
         sort($keys_result);
 
@@ -35,7 +35,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException Exception
-     * @expectedExceptionMessage Input must be text.
+     * @expectedExceptionMessage Accepted datatypes: string
      */
     public function testPoliticalRaisesExceptionWhenGivenInteger()
     {
@@ -45,7 +45,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException Exception
-     * @expectedExceptionMessage Input must be text.
+     * @expectedExceptionMessage Accepted datatypes: string
      */
     public function testPoliticalRaisesExceptionWhenGivenBool()
     {
@@ -121,7 +121,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testExplicitAuthArgument() {
-        self::skipIfMissingEnvironmentVars(); 
+        self::skipIfMissingEnvironmentVars();
         $examples = array('worst day ever', 'best day ever');
         $api_key = getenv("INDICO_API_KEY");
         $data = IndicoIo::batch_sentiment($examples, $api_key);
@@ -132,7 +132,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testBatchPolitical() {
-        self::skipIfMissingCredentials();       
+        self::skipIfMissingCredentials();
         $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
         $examples = array('save the whales', 'cut taxes');
         $data = IndicoIo::batch_political($examples);
@@ -141,7 +141,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
         $datapoint = $data[0];
         $keys_result = array_keys($datapoint);
-        
+
         sort($keys_expected);
         sort($keys_result);
 
@@ -150,7 +150,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
     public function testBatchSentiment()
     {
-        self::skipIfMissingCredentials();       
+        self::skipIfMissingCredentials();
         $examples = array('worst day ever', 'best day ever');
         $data = IndicoIo::batch_sentiment($examples);
 
@@ -232,7 +232,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($datapoint), 2048);
     }
 
-    public function testConfigureFromEnvironmentVariables() 
+    public function testConfigureFromEnvironmentVariables()
     {
         # store previous settings to reset later
         $prev_api_key = getenv("INDICO_API_KEY");
