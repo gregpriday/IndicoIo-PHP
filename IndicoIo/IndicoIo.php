@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace IndicoIo;
 use Exception;
@@ -36,7 +36,7 @@ class IndicoIo
         return self::_callService($text, 'political', $cloud, $api_key);
     }
 
-    public static function batch_political($text, $api_key = false, $cloud = false) 
+    public static function batch_political($text, $api_key = false, $cloud = false)
     {
     	return self::_callService($text, 'political', $cloud, $api_key, $batch = true);
     }
@@ -116,7 +116,7 @@ class IndicoIo
 		# Load from configuration array if present
 		if (!$api_key) {
 			$api_key = self::$config['api_key'];
-		} 
+		}
 		if (!$cloud) {
 			$cloud = self::$config['cloud'];
 		}
@@ -124,17 +124,18 @@ class IndicoIo
 		$query_url = self::api_url($cloud, $service, $batch, $api_key);
 		$json_data = json_encode(array('data' => $data));
 
-		$ch = curl_init($query_url);                                                                      
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");                                                                     
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);                                                                  
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);                                                                      
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array(                                                                          
-		    'Content-Type: application/json',                                                                                
-		    'Content-Length: ' . strlen($json_data))                                                                       
-		);    
+		$ch = curl_init($query_url);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+		    'Content-Type: application/json',
+		    'Content-Length: ' . strlen($json_data),
+		    'client-lib: php'
+		));
 
-		$result = curl_exec($ch); 
-		curl_close($ch); 
+		$result = curl_exec($ch);
+		curl_close($ch);
 
 		$parsed = json_decode($result, $assoc = true);
 		if (array_key_exists('results', $parsed)) {
