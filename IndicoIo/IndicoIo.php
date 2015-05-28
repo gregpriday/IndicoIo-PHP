@@ -132,7 +132,7 @@ class IndicoIo
 		    'Content-Type: application/json',
 		    'Content-Length: ' . strlen($json_data),
 		    'client-lib: php',
-                    'version-number: 0.1.0'
+        	    'version-number: 0.1.0'
 		));
 
 		$result = curl_exec($ch);
