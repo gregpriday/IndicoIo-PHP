@@ -131,7 +131,8 @@ class IndicoIo
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 		    'Content-Type: application/json',
 		    'Content-Length: ' . strlen($json_data),
-		    'client-lib: php'
+		    'client-lib: php',
+                    'version-number: 0.1.0'
 		));
 
 		$result = curl_exec($ch);

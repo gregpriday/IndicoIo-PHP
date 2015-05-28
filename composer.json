@@ -1,8 +1,9 @@
 {
-	"name": "indicoio/indicoio-php",
-	"description": "Rest Api Wrapper for PHP.",
-	"keywords": ["Rest Api Wrapper for PHP", "IndicoIo"],
-	"type": "project",
+    "name": "indicoio/indicoio-php",
+    "description": "Rest Api Wrapper for PHP.",
+    "version": "0.1.0",
+    "keywords": ["Rest Api Wrapper for PHP", "IndicoIo"],
+    "type": "project",
     "require": {
         "php": ">=5.3",
         "ext-curl": "*"
