@@ -232,6 +232,48 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($datapoint), 2048);
     }
 
+
+    public function testPredictText()
+    {
+        self::skipIfMissingCredentials();
+        $data = IndicoIo::predict_text('Excited to be alive!', $apis=array("sentiment", "political"));
+        $this->assertGreaterThan(0, $data["sentiment"]);
+        $this->assertGreaterThan($data["sentiment"], 1);
+    }
+
+    public function testBatchPredictText()
+    {
+        self::skipIfMissingCredentials();
+        $data = IndicoIo::batch_predict_text(array("Excited to be alive!", "sadness"), $apis=array("sentiment", "political"));
+        $this->assertGreaterThan(0, $data["sentiment"][0]);
+        $this->assertGreaterThan($data["sentiment"][0], 1);
+        $this->assertGreaterThan(.5, $data["sentiment"][1]);
+    }
+
+
+    public function testPredictImage()
+    {
+        self::skipIfMissingCredentials();
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $data = IndicoIo::predict_image($image, $apis=array("image_features"));
+
+        $this->assertEquals(count($data["image_features"]), 2048);
+    }
+
+    public function testBatchPredictImage()
+    {
+        self::skipIfMissingCredentials();
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $examples = array($image, $image);
+        $data = IndicoIo::batch_predict_image($examples, $apis=array("image_features"));
+
+        $this->assertEquals(count($data["image_features"]), count($examples));
+        $datapoint = $data["image_features"][0];
+        $this->assertEquals(count($datapoint), 2048);
+    }
+
     public function testConfigureFromEnvironmentVariables()
     {
         # store previous settings to reset later
