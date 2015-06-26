@@ -124,7 +124,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         self::skipIfMissingEnvironmentVars();
         $examples = array('worst day ever', 'best day ever');
         $api_key = getenv("INDICO_API_KEY");
-        $data = IndicoIo::batch_sentiment($examples, $api_key);
+        $data = IndicoIo::batch_sentiment($examples, array("api_key"=>$api_key));
 
         $this->assertEquals(count($data), count($examples));
         $this->assertInternalType('array', $data);
@@ -236,7 +236,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testPredictText()
     {
         self::skipIfMissingCredentials();
-        $data = IndicoIo::predict_text('Excited to be alive!', $apis=array("sentiment", "political"));
+        $data = IndicoIo::predict_text('Excited to be alive!', array("apis"=>array("sentiment", "political")));
         $this->assertGreaterThan(0, $data["sentiment"]);
         $this->assertGreaterThan($data["sentiment"], 1);
     }
@@ -244,7 +244,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testBatchPredictText()
     {
         self::skipIfMissingCredentials();
-        $data = IndicoIo::batch_predict_text(array("Excited to be alive!", "sadness"), $apis=array("sentiment", "political"));
+        $data = IndicoIo::batch_predict_text(array("Excited to be alive!", "sadness"), array("apis"=>array("sentiment", "political")));
         $this->assertGreaterThan(0, $data["sentiment"][0]);
         $this->assertGreaterThan($data["sentiment"][0], 1);
         $this->assertGreaterThan(.5, $data["sentiment"][1]);
@@ -256,7 +256,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         self::skipIfMissingCredentials();
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
-        $data = IndicoIo::predict_image($image, $apis=array("image_features"));
+        $data = IndicoIo::predict_image($image, array("apis"=>array("image_features")));
 
         $this->assertEquals(count($data["image_features"]), 2048);
     }
@@ -267,7 +267,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
         $examples = array($image, $image);
-        $data = IndicoIo::batch_predict_image($examples, $apis=array("image_features"));
+        $data = IndicoIo::batch_predict_image($examples, array("apis"=> array("image_features")));
 
         $this->assertEquals(count($data["image_features"]), count($examples));
         $datapoint = $data["image_features"][0];
