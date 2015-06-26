@@ -39,126 +39,149 @@ class IndicoIo
 		return $url;
 	}
 
-	public static function political($text, $api_key = false, $cloud = false)
+	public static function political($text, $params=array())
 	{
-        return self::_callService($text, 'political', $cloud, $api_key);
-    }
-
-    public static function batch_political($text, $api_key = false, $cloud = false)
-    {
-    	return self::_callService($text, 'political', $cloud, $api_key, $batch = true);
-    }
-
-	public static function sentiment($text, $api_key = false, $cloud = false)
-	{
-        return self::_callService($text, 'sentiment', $cloud, $api_key);
+		return self::_callService($text, 'political', $params);
 	}
 
-	public static function batch_sentiment($text, $api_key = false, $cloud = false)
+	public static function batch_political($text, $params=array())
 	{
-        return self::_callService($text, 'sentiment', $cloud, $api_key, $batch = true);
+		$params["batch"] = true;
+		return self::_callService($text, 'political', $params);
 	}
 
-	public static  function posneg($text, $api_key = false, $cloud = false)
+	public static function sentiment($text, $params=array())
 	{
-		return self::sentiment($text, $api_key, $cloud);
+		return self::_callService($text, 'sentiment', $params);
 	}
 
-	public static function batch_posneg($text, $api_key = false, $cloud = false)
+	public static function batch_sentiment($text, $params=array())
 	{
-		return self::sentiment($text, $cloud, $api_key, $batch = true);
+		$params["batch"] = true;
+		return self::_callService($text, 'sentiment', $params);
 	}
 
-	public static function language($text, $api_key = false, $cloud = false)
+	public static function posneg($text, $params=array())
 	{
-		return self::_callService($text, 'language', $cloud, $api_key);
+		return self::sentiment($text, $params);
 	}
 
-	public static function batch_language($text, $api_key = false, $cloud = false)
+	public static function batch_posneg($text, $params=array())
 	{
-		return self::_callService($text, 'language', $cloud, $api_key, $batch = true);
+		$params["batch"] = true;
+		return self::sentiment($text, $params);
 	}
 
-	public static function text_tags($text, $api_key = false, $cloud = false)
+	public static function language($text, $params=array())
 	{
-		return self::_callService($text, 'texttags', $cloud, $api_key);
+		return self::_callService($text, 'language', $params);
 	}
 
-	public static function batch_text_tags($text, $api_key = false, $cloud = false)
+	public static function batch_language($text, $params=array())
 	{
-		return self::_callService($text, 'texttags', $cloud, $api_key, $batch = true);
+		$params["batch"] = true;
+		return self::_callService($text, 'language', $params);
 	}
 
-	public static function fer($image, $api_key = false, $cloud = false)
+	public static function text_tags($text, $params=array())
 	{
-		return self::_callService($image, 'fer', $cloud, $api_key);
+		return self::_callService($text, 'texttags', $params);
 	}
 
-	public static function batch_fer($images, $api_key = false, $cloud = false)
+	public static function batch_text_tags($text, $params=array())
 	{
-		return self::_callService($images, 'fer', $cloud, $api_key, $batch = true);
+		$params["batch"] = true;
+		return self::_callService($text, 'texttags', $params);
 	}
 
-	public static function facial_features($image, $api_key = false, $cloud = false)
+	public static function fer($image, $params=array())
 	{
-		return self::_callService($image, 'facialfeatures', $api_key);
+		return self::_callService($image, 'fer', $params);
 	}
 
-	public static function batch_facial_features($images, $api_key = false, $cloud = false)
+	public static function batch_fer($images, $params=array())
 	{
-		return self::_callService($images, 'facialfeatures', $cloud, $api_key, $batch = true);
+		$params["batch"] = true;
+		return self::_callService($images, 'fer', $params);
 	}
 
-	public static function image_features($image, $api_key = false, $cloud = false)
+	public static function facial_features($image, $params=array())
 	{
-		return self::_callService($image, 'imagefeatures', $cloud, $api_key);
+		return self::_callService($image, 'facialfeatures', $params);
 	}
 
-	public static function batch_image_features($images, $api_key = false, $cloud = false)
+	public static function batch_facial_features($images, $params=array())
 	{
-		return self::_callService($images, 'imagefeatures', $cloud, $api_key, $batch = true);
+		$params["batch"] = true;
+		return self::_callService($images, 'facialfeatures', $params);
+	}
+
+	public static function image_features($image, $params=array())
+	{
+		return self::_callService($image, 'imagefeatures', $params);
+	}
+
+	public static function batch_image_features($images, $params=array())
+	{
+		$params["batch"] = true;
+		return self::_callService($images, 'imagefeatures', $params);
 	}
 
 	# Multi API Calls
-	public static function predict_text($text, $apis = TEXT_APIS, $api_key = false, $cloud = false)
+	public static function predict_text($text, $params=array())
 	{
+		$apis = self::get($params, "apis");
 		$converted_apis = Multi::filterApis($apis, self::$TEXT_APIS);
-		$results = self::_callService($text, "apis", $cloud, $api_key, $batch=false, array("apis"=>$converted_apis));
+		$params["apis"] = $converted_apis;
+		$results = self::_callService($text, "apis", $params);
 		return Multi::convertResults($results, $apis);
 	}
 
-	public static function batch_predict_text($text, $apis = TEXT_APIS, $api_key = false, $cloud = false)
+	public static function batch_predict_text($text, $params=array())
 	{
+		$apis = self::get($params, "apis");
 		$converted_apis = Multi::filterApis($apis, self::$TEXT_APIS);
-		$results = self::_callService($text, "apis", $cloud, $api_key, $batch = true, array("apis"=>$converted_apis));
+		$params["apis"] = $converted_apis;
+		$params["batch"] = true;
+		$results = self::_callService($text, "apis", $params);
 		return Multi::convertResults($results, $apis);
 	}
 
-	public static function predict_image($image, $apis = IMAGE_APIS, $api_key = false, $cloud = false)
+	public static function predict_image($image, $params=array())
 	{
+		$apis = self::get($params, "apis");
 		$converted_apis = Multi::filterApis($apis, self::$IMAGE_APIS);
-		$results = self::_callService($image, "apis", $cloud, $api_key, $batch=false, array("apis"=>$converted_apis));
+		$params["apis"] = $converted_apis;
+		$results = self::_callService($image, "apis", $params);
 		return Multi::convertResults($results, $apis);
 	}
 
-	public static function batch_predict_image($images, $apis = IMAGE_APIS, $api_key = false, $cloud = false)
+	public static function batch_predict_image($images, $params=array())
 	{
+		$apis = self::get($params, "apis");
 		$converted_apis = Multi::filterApis($apis, self::$IMAGE_APIS);
-		$results = self::_callService($images, "apis", $cloud, $api_key, $batch = true, array("apis"=>$converted_apis));
+		$params["apis"] = $converted_apis;
+		$params["batch"] = true;
+		$results = self::_callService($images, "apis", $params);
 		return Multi::convertResults($results, $apis);
 	}
 
-	protected static function _callService($data, $service, $cloud = false, $api_key = false, $batch = false, $params = array())
+	protected static function _callService($data, $service, $params = array())
 	{
 		# Load from configuration array if present
-		if (!$api_key) {
-			$api_key = self::$config['api_key'];
-		}
-		if (!$cloud) {
-			$cloud = self::$config['cloud'];
+		$api_key = self::get($params, 'api_key');
+		$cloud = self::get($params, "cloud");
+		$batch = self::get($params, "batch");
+		$apis = self::get($params, "apis");
+
+		# Set up Url Paramters
+		$url_params = array();
+		if ($apis) {
+			$url_params["apis"] = $apis;
 		}
 
-		$query_url = self::api_url($cloud, $service, $batch, $api_key, $params);
+		# Set up Request
+		$query_url = self::api_url($cloud, $service, $batch, $api_key, $url_params);
 		$json_data = json_encode(array_merge(array('data' => $data), $params));
 
 		$ch = curl_init($query_url);
@@ -166,10 +189,10 @@ class IndicoIo
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-		    'Content-Type: application/json',
-		    'Content-Length: ' . strlen($json_data),
-		    'client-lib: php',
-        	    'version-number: 0.1.0'
+			'Content-Type: application/json',
+			'Content-Length: ' . strlen($json_data),
+			'client-lib: php',
+				'version-number: 0.1.0'
 		));
 
 		$result = curl_exec($ch);
@@ -177,13 +200,27 @@ class IndicoIo
 
 		$parsed = json_decode($result, $assoc = true);
 		if (array_key_exists('results', $parsed)) {
-            return $parsed['results'];
-        } else if (array_key_exists('error', $parsed)) {
-            throw new Exception($parsed['error']);
-        } else {
-        	throw new Exception($parsed);
-        }
+			return $parsed['results'];
+		} else if (array_key_exists('error', $parsed)) {
+			throw new Exception($parsed['error']);
+		} else {
+			throw new Exception($parsed);
+		}
+	}
+
+	static function get(&$array, $key) {
+		if (array_key_exists($key, $array)) {
+			$value = $array[$key];
+		} elseif (array_key_exists($key, self::$config)) {
+			$value = self::$config[$key];
+		} else {
+			$value = False;
+		}
+
+		unset($array[$key]);
+		return $value;
 	}
 }
+
 
 IndicoIo::$config = Configure::loadConfiguration();
