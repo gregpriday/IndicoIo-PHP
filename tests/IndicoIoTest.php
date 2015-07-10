@@ -100,7 +100,14 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array_keys($categories_hash), $categories);
 
         $this->assertGreaterThan(.999, array_sum(array_values($categories_hash)));
+    }
 
+    public function testKeywords()
+    {
+        self::skipIfMissingCredentials();
+        $data = IndicoIo::keywords('This sentence contains three keywords ...');
+        $keys_result = array_keys($data);
+        $this->assertEquals(count($keys_result), 3);
     }
 
     public function testFerWhenGivenTheRightParameters()
@@ -225,7 +232,21 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array_keys($categories_hash), $categories);
 
         $this->assertGreaterThan(.999, array_sum(array_values($categories_hash)));
+    }
 
+    public function testBatchKeywords()
+    {
+        self::skipIfMissingCredentials();
+        $examples = array(
+            'This sentence contains three keywords',
+            'We are in for a windy Thursday and a rainy Friday'
+        );
+        $data = IndicoIo::batch_keywords($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $keys_result = array_keys($datapoint);
+        $this->assertEquals(count($keys_result), 3);
     }
 
     public function testBatchFer()

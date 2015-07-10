@@ -99,6 +99,17 @@ class IndicoIo
 		return self::_callService($image, 'fer', $params);
 	}
 
+	public static function keywords($text, $params=array())
+	{
+		return self::_callService($text, 'keywords', $params);
+	}
+
+	public static function batch_keywords($text, $params=array())
+	{
+		$params['batch'] = true;
+		return self::_callService($text, 'keywords', $params);
+	}
+
 	public static function batch_fer($images, $params=array())
 	{
 		$params["batch"] = true;
