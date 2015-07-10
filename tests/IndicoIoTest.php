@@ -69,6 +69,14 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertGreaterThan($data, 1);
     }
 
+    public function testSentimentHQReturnValueBetweenOneAndZero()
+    {
+        self::skipIfMissingCredentials();
+        $data = IndicoIo::sentiment_hq('Excited to be alive!');
+        $this->assertGreaterThan(0, $data);
+        $this->assertGreaterThan($data, 1);
+    }
+
     public function testLanguageWhenGivenTheRightPrameters()
     {
         self::skipIfMissingCredentials();
@@ -80,9 +88,34 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testTextTags()
     {
         self::skipIfMissingCredentials();
-        $data = IndicoIo::text_tags('On Monday, the president will be ...');
+        $data = IndicoIo::text_tags('I want to move to New York City!');
         $keys_result = array_keys($data);
         $this->assertEquals(count($keys_result), 111);
+    }
+
+    public function testNamedEntities()
+    {
+        self::skipIfMissingCredentials();
+        $data = IndicoIo::named_entities('I want to move to New York City!');
+
+        $first_key_result = array_keys($data)[0];
+        $values = $data[$first_key_result];
+        $ne_keys = array_keys($values);
+        $this->assertEquals($ne_keys, ['confidence', 'categories']);
+
+        $categories_hash = $values['categories'];
+        $categories = ['unknown', 'organization', 'location', 'person'];
+        $this->assertEquals(array_keys($categories_hash), $categories);
+
+        $this->assertGreaterThan(.999, array_sum(array_values($categories_hash)));
+    }
+
+    public function testKeywords()
+    {
+        self::skipIfMissingCredentials();
+        $data = IndicoIo::keywords('This sentence contains three keywords ...');
+        $keys_result = array_keys($data);
+        $this->assertEquals(count($keys_result), 3);
     }
 
     public function testFerWhenGivenTheRightParameters()
@@ -124,7 +157,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         self::skipIfMissingEnvironmentVars();
         $examples = array('worst day ever', 'best day ever');
         $api_key = getenv("INDICO_API_KEY");
-        $data = IndicoIo::batch_sentiment($examples, $api_key);
+        $data = IndicoIo::batch_sentiment($examples, array("api_key"=>$api_key));
 
         $this->assertEquals(count($data), count($examples));
         $this->assertInternalType('array', $data);
@@ -149,6 +182,17 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testBatchSentiment()
+    {
+        self::skipIfMissingCredentials();
+        $examples = array('worst day ever', 'best day ever');
+        $data = IndicoIo::batch_sentiment_hq($examples);
+
+        $this->assertEquals(count($data), count($examples));
+        $this->assertInternalType('array', $data);
+        $this->assertInternalType('float', $data[0]);
+    }
+
+    public function testBatchSentimentHQ()
     {
         self::skipIfMissingCredentials();
         $examples = array('worst day ever', 'best day ever');
@@ -184,6 +228,44 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $datapoint = $data[0];
         $keys_result = array_keys($datapoint);
         $this->assertEquals(count($keys_result), 111);
+    }
+
+    public function testBatchNamedEntities()
+    {
+        self::skipIfMissingCredentials();
+        $examples = array(
+            'I want to move to New York City!',
+            'Do you prefer Gandalf the Grey or Gandalf the White?'
+        );
+        $data = IndicoIo::batch_named_entities($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $first_key_result = array_keys($datapoint)[0];
+        $values = $datapoint[$first_key_result];
+        $ne_keys = array_keys($values);
+        $this->assertEquals($ne_keys, ['confidence', 'categories']);
+
+        $categories_hash = $values['categories'];
+        $categories = ['unknown', 'organization', 'location', 'person'];
+        $this->assertEquals(array_keys($categories_hash), $categories);
+
+        $this->assertGreaterThan(.999, array_sum(array_values($categories_hash)));
+    }
+
+    public function testBatchKeywords()
+    {
+        self::skipIfMissingCredentials();
+        $examples = array(
+            'This sentence contains three keywords',
+            'We are in for a windy Thursday and a rainy Friday'
+        );
+        $data = IndicoIo::batch_keywords($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $keys_result = array_keys($datapoint);
+        $this->assertEquals(count($keys_result), 3);
     }
 
     public function testBatchFer()
@@ -229,6 +311,48 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($data), count($examples));
 
         $datapoint = $data[0];
+        $this->assertEquals(count($datapoint), 2048);
+    }
+
+
+    public function testPredictText()
+    {
+        self::skipIfMissingCredentials();
+        $data = IndicoIo::predict_text('Excited to be alive!', array("apis"=>array("sentiment", "political")));
+        $this->assertGreaterThan(0, $data["sentiment"]);
+        $this->assertGreaterThan($data["sentiment"], 1);
+    }
+
+    public function testBatchPredictText()
+    {
+        self::skipIfMissingCredentials();
+        $data = IndicoIo::batch_predict_text(array("Excited to be alive!", "sadness"), array("apis"=>array("sentiment", "political")));
+        $this->assertGreaterThan(0, $data["sentiment"][0]);
+        $this->assertGreaterThan($data["sentiment"][0], 1);
+        $this->assertGreaterThan(.5, $data["sentiment"][1]);
+    }
+
+
+    public function testPredictImage()
+    {
+        self::skipIfMissingCredentials();
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $data = IndicoIo::predict_image($image, array("apis"=>array("image_features")));
+
+        $this->assertEquals(count($data["image_features"]), 2048);
+    }
+
+    public function testBatchPredictImage()
+    {
+        self::skipIfMissingCredentials();
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $examples = array($image, $image);
+        $data = IndicoIo::batch_predict_image($examples, array("apis"=> array("image_features")));
+
+        $this->assertEquals(count($data["image_features"]), count($examples));
+        $datapoint = $data["image_features"][0];
         $this->assertEquals(count($datapoint), 2048);
     }
 
