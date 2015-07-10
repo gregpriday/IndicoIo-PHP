@@ -80,9 +80,27 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testTextTags()
     {
         self::skipIfMissingCredentials();
-        $data = IndicoIo::text_tags('On Monday, the president will be ...');
+        $data = IndicoIo::text_tags('I want to move to New York City!');
         $keys_result = array_keys($data);
         $this->assertEquals(count($keys_result), 111);
+    }
+
+    public function testNamedEntities()
+    {
+        self::skipIfMissingCredentials();
+        $data = IndicoIo::named_entities('I want to move to New York City!');
+
+        $first_key_result = array_keys($data)[0];
+        $values = $data[$first_key_result];
+        $ne_keys = array_keys($values);
+        $this->assertEquals($ne_keys, ['confidence', 'categories']);
+
+        $categories_hash = $values['categories'];
+        $categories = ['unknown', 'organization', 'location', 'person'];
+        $this->assertEquals(array_keys($categories_hash), $categories);
+
+        $this->assertGreaterThan(.999, array_sum(array_values($categories_hash)));
+
     }
 
     public function testFerWhenGivenTheRightParameters()
@@ -184,6 +202,30 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $datapoint = $data[0];
         $keys_result = array_keys($datapoint);
         $this->assertEquals(count($keys_result), 111);
+    }
+
+    public function testBatchNamedEntities()
+    {
+        self::skipIfMissingCredentials();
+        $examples = array(
+            'I want to move to New York City!',
+            'Do you prefer Gandalf the Grey or Gandalf the White?'
+        );
+        $data = IndicoIo::batch_named_entities($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+        $first_key_result = array_keys($datapoint)[0];
+        $values = $datapoint[$first_key_result];
+        $ne_keys = array_keys($values);
+        $this->assertEquals($ne_keys, ['confidence', 'categories']);
+
+        $categories_hash = $values['categories'];
+        $categories = ['unknown', 'organization', 'location', 'person'];
+        $this->assertEquals(array_keys($categories_hash), $categories);
+
+        $this->assertGreaterThan(.999, array_sum(array_values($categories_hash)));
+
     }
 
     public function testBatchFer()

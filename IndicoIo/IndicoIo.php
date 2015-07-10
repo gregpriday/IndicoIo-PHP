@@ -105,6 +105,17 @@ class IndicoIo
 		return self::_callService($images, 'fer', $params);
 	}
 
+	public static function named_entities($text, $params=array())
+	{
+		return self::_callService($text, 'namedentities', $params);
+	}
+
+	public static function batch_named_entities($text, $params=array())
+	{
+		$params['batch'] = true;
+		return self::_callService($text, 'namedentities', $params);
+	}
+
 	public static function facial_features($image, $params=array())
 	{
 		return self::_callService($image, 'facialfeatures', $params);
