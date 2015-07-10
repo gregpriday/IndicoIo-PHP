@@ -61,15 +61,15 @@ class IndicoIo
 		return self::_callService($text, 'sentiment', $params);
 	}
 
-	public static function posneg($text, $params=array())
+	public static function sentiment_hq($text, $params=array())
 	{
-		return self::sentiment($text, $params);
+        return self::_callService($text, 'sentimenthq', $params);
 	}
 
-	public static function batch_posneg($text, $params=array())
+	public static function batch_sentiment_hq($text, $params=array())
 	{
-		$params["batch"] = true;
-		return self::sentiment($text, $params);
+		$params['batch'] = true;
+        return self::_callService($text, 'sentimenthq', $params);
 	}
 
 	public static function language($text, $params=array())

@@ -69,6 +69,14 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertGreaterThan($data, 1);
     }
 
+    public function testSentimentHQReturnValueBetweenOneAndZero()
+    {
+        self::skipIfMissingCredentials();
+        $data = IndicoIo::sentiment_hq('Excited to be alive!');
+        $this->assertGreaterThan(0, $data);
+        $this->assertGreaterThan($data, 1);
+    }
+
     public function testLanguageWhenGivenTheRightPrameters()
     {
         self::skipIfMissingCredentials();
@@ -174,6 +182,17 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testBatchSentiment()
+    {
+        self::skipIfMissingCredentials();
+        $examples = array('worst day ever', 'best day ever');
+        $data = IndicoIo::batch_sentiment_hq($examples);
+
+        $this->assertEquals(count($data), count($examples));
+        $this->assertInternalType('array', $data);
+        $this->assertInternalType('float', $data[0]);
+    }
+
+    public function testBatchSentimentHQ()
     {
         self::skipIfMissingCredentials();
         $examples = array('worst day ever', 'best day ever');
