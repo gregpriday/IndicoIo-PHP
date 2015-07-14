@@ -133,6 +133,20 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($keys_expected, $keys_result);
     }
 
+    public function testContentFilterWhenGivenTheRightParameters()
+    {
+        self::skipIfMissingCredentials();
+        
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $data = IndicoIo::content_filter($image);
+
+        $this->assertGreaterThan(-0.0000001, $data);
+        $this->assertLessThan(1.0000001, $data);
+        $this->assertEquals(gettype($data), "double");
+
+    }
+
     public function testFacialFeaturesWhenGivenTheRightParameters()
     {
         self::skipIfMissingCredentials();
@@ -153,7 +167,8 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($data), 2048);
     }
 
-    public function testExplicitAuthArgument() {
+    public function testExplicitAuthArgument() 
+    {
         self::skipIfMissingEnvironmentVars();
         $examples = array('worst day ever', 'best day ever');
         $api_key = getenv("INDICO_API_KEY");
@@ -164,7 +179,8 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('float', $data[0]);
     }
 
-    public function testBatchPolitical() {
+    public function testBatchPolitical() 
+    {
         self::skipIfMissingCredentials();
         $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
         $examples = array('save the whales', 'cut taxes');
@@ -288,6 +304,24 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($keys_expected, $keys_result);
     }
 
+    public function testBatchContentFilter()
+    {
+        self::skipIfMissingCredentials();
+        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
+        $image = json_decode($file_content, true);
+        $examples = array($image, $image);
+
+        $data = IndicoIo::batch_content_filter($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $datapoint = $data[0];
+
+        $this->assertEquals(gettype($data), "array");
+        $this->assertEquals(gettype($datapoint), "double");
+        $this->assertGreaterThan(-0.0000001, $datapoint);
+        $this->assertLessThan(1.0000001, $datapoint);
+    }
+
     public function testBatchFacialFeatures()
     {
         self::skipIfMissingCredentials();
@@ -313,7 +347,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $datapoint = $data[0];
         $this->assertEquals(count($datapoint), 2048);
     }
-
 
     public function testPredictText()
     {
