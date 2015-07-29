@@ -118,6 +118,16 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($keys_result), 3);
     }
 
+    public function testTwitterEngagement()
+    {
+        self::skipIfMissingCredentials();
+        $examples = 'I want to move to New York City!';
+
+        $data = IndicoIo::twitter_engagement($examples);
+        $this->assertGreaterThan(0, $data);
+        $this->assertGreaterThan($data, 1);
+    }
+
     public function testFerWhenGivenTheRightParameters()
     {
         self::skipIfMissingCredentials();
@@ -136,7 +146,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testContentFilterWhenGivenTheRightParameters()
     {
         self::skipIfMissingCredentials();
-        
+
         $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $image = json_decode($file_content, true);
         $data = IndicoIo::content_filter($image);
@@ -167,7 +177,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($data), 2048);
     }
 
-    public function testExplicitAuthArgument() 
+    public function testExplicitAuthArgument()
     {
         self::skipIfMissingEnvironmentVars();
         $examples = array('worst day ever', 'best day ever');
@@ -179,7 +189,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertInternalType('float', $data[0]);
     }
 
-    public function testBatchPolitical() 
+    public function testBatchPolitical()
     {
         self::skipIfMissingCredentials();
         $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
@@ -267,6 +277,21 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array_keys($categories_hash), $categories);
 
         $this->assertGreaterThan(.999, array_sum(array_values($categories_hash)));
+    }
+
+    public function testBatchTwitterEngagement()
+    {
+        self::skipIfMissingCredentials();
+        $examples = array(
+            'I want to move to New York City!',
+            'Do you prefer Gandalf the Grey or Gandalf the White?'
+        );
+
+        $data = IndicoIo::batch_twitter_engagement($examples);
+        $this->assertEquals(count($data), count($examples));
+
+        $this->assertGreaterThan(0, $data[0]);
+        $this->assertGreaterThan($data[0], 1);
     }
 
     public function testBatchKeywords()
