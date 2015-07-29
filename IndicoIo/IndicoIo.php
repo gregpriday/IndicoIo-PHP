@@ -129,15 +129,9 @@ class IndicoIo
 		$params['batch'] = true;
 		return self::_callService($text, 'namedentities', $params);
 	}
-	
+
 	public static function twitter_engagement($text, $params=array())
 	{
-		return self::_callService($text, 'twitterengagement', $params);
-	}
-
-	public static function batch_twitter_engagement($text, $params=array())
-	{
-		$params['batch'] = true;
 		return self::_callService($text, 'twitterengagement', $params);
 	}
 
