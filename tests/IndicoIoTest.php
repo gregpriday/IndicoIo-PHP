@@ -132,8 +132,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     {
         self::skipIfMissingCredentials();
         $keys_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
+        $image = file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $data = IndicoIo::fer($image);
         $keys_result = array_keys($data);
 
@@ -146,9 +145,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testContentFilterWhenGivenTheRightParameters()
     {
         self::skipIfMissingCredentials();
-
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
+        $image = file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $data = IndicoIo::content_filter($image);
 
         $this->assertGreaterThan(-0.0000001, $data);
@@ -160,8 +157,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testFacialFeaturesWhenGivenTheRightParameters()
     {
         self::skipIfMissingCredentials();
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
+        $image = file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $data = IndicoIo::facial_features($image);
 
         $this->assertEquals(count($data), 48);
@@ -170,8 +166,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testImageFeaturesWhenGivenTheRightParameters()
     {
         self::skipIfMissingCredentials();
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
+        $image = file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $data = IndicoIo::image_features($image);
 
         $this->assertEquals(count($data), 2048);
@@ -313,8 +308,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     {
         self::skipIfMissingCredentials();
         $keys_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
+        $image = file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $examples = array($image, $image);
 
         $data = IndicoIo::batch_fer($examples);
@@ -332,8 +326,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testBatchContentFilter()
     {
         self::skipIfMissingCredentials();
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
+        $image = file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $examples = array($image, $image);
 
         $data = IndicoIo::batch_content_filter($examples);
@@ -350,8 +343,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testBatchFacialFeatures()
     {
         self::skipIfMissingCredentials();
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
+        $image = file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $examples = array($image, $image);
         $data = IndicoIo::batch_facial_features($examples);
         $this->assertEquals(count($data), count($examples));
@@ -363,8 +355,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testBatchImageFeatures()
     {
         self::skipIfMissingCredentials();
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
+        $image = file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $examples = array($image, $image);
         $data = IndicoIo::batch_image_features($examples);
         $this->assertEquals(count($data), count($examples));
@@ -394,8 +385,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testPredictImage()
     {
         self::skipIfMissingCredentials();
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
+        $image = file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $data = IndicoIo::predict_image($image, array("apis"=>array("image_features")));
 
         $this->assertEquals(count($data["image_features"]), 2048);
@@ -404,8 +394,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testBatchPredictImage()
     {
         self::skipIfMissingCredentials();
-        $file_content =  file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
-        $image = json_decode($file_content, true);
+        $image = file_get_contents(dirname(__FILE__) .DIRECTORY_SEPARATOR.'/data_test.json');
         $examples = array($image, $image);
         $data = IndicoIo::batch_predict_image($examples, array("apis"=> array("image_features")));
 
