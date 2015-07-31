@@ -50,7 +50,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_political` function will be deprecated in the next major upgrade." .
-			"Please call `political` instead with the same arguments", 
+			"Please call `political` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::political($text, $params);
@@ -66,7 +66,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_sentiment` function will be deprecated in the next major upgrade." .
-			"Please call `sentiment` instead with the same arguments", 
+			"Please call `sentiment` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::sentiment($text, $params);
@@ -82,7 +82,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_sentiment_hq` function will be deprecated in the next major upgrade." .
-			"Please call `sentiment_hq` instead with the same arguments", 
+			"Please call `sentiment_hq` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::sentiment_hq($text, $params);
@@ -98,7 +98,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_language` function will be deprecated in the next major upgrade." .
-			"Please call `language` instead with the same arguments", 
+			"Please call `language` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::language($text, $params);
@@ -114,7 +114,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_text_tags` function will be deprecated in the next major upgrade." .
-			"Please call `text_tags` instead with the same arguments", 
+			"Please call `text_tags` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::text_tags($text, $params);
@@ -132,7 +132,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_fer` function will be deprecated in the next major upgrade." .
-			"Please call `fer` instead with the same arguments", 
+			"Please call `fer` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::fer($text, $params);
@@ -148,7 +148,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_keywords` function will be deprecated in the next major upgrade." .
-			"Please call `keywords` instead with the same arguments", 
+			"Please call `keywords` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::keywords($text, $params);
@@ -164,7 +164,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_named_entities` function will be deprecated in the next major upgrade." .
-			"Please call `named_entities` instead with the same arguments", 
+			"Please call `named_entities` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::named_entities($text, $params);
@@ -180,7 +180,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_twitter_engagement` function will be deprecated in the next major upgrade." .
-			"Please call `twitter_engagement` instead with the same arguments", 
+			"Please call `twitter_engagement` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::twitter_engagement($text, $params);
@@ -197,7 +197,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_facial_features` function will be deprecated in the next major upgrade." .
-			"Please call `facial_features` instead with the same arguments", 
+			"Please call `facial_features` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::facial_features($image, $params);
@@ -214,7 +214,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_image_features` function will be deprecated in the next major upgrade." .
-			"Please call `image_features` instead with the same arguments", 
+			"Please call `image_features` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::image_features($image, $params);
@@ -231,10 +231,16 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_content_filter` function will be deprecated in the next major upgrade." .
-			"Please call `content_filter` instead with the same arguments", 
+			"Please call `content_filter` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::content_filter($image, $params);
+	}
+
+	public static function facial_localization($image, $params=array())
+	{
+		$image = Image::processImage($image, false, false);
+		return self::_callService($image, 'faciallocalization', $params);
 	}
 
 
@@ -251,7 +257,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_predict_text` function will be deprecated in the next major upgrade." .
-			"Please call `predict_text` instead with the same arguments", 
+			"Please call `predict_text` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::predict_text($text, $params);
@@ -270,7 +276,7 @@ class IndicoIo
 	{
 		trigger_error(
 			"The `batch_predict_image` function will be deprecated in the next major upgrade." .
-			"Please call `predict_image` instead with the same arguments", 
+			"Please call `predict_image` instead with the same arguments",
 			E_USER_WARNING
 		);
 		return self::predict_image($image, $params);

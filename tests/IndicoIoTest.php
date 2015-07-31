@@ -145,6 +145,17 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($keys_expected, $keys_result);
     }
 
+    public function testFacialLocalizationWhenGivenTheRightParameters()
+    {
+        self::skipIfMissingCredentials();
+        $image = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'/data_test.json');
+        $data = IndicoIo::facial_localization($image);
+
+        $this->assertInternalType('array', $data);
+        $this->assertInternalType('array', $data[0]);
+        $this->assertInternalType('array', $data[0]["top_left_corner"]);
+    }
+
     public function testContentFilterWhenGivenTheRightParameters()
     {
         self::skipIfMissingCredentials();
@@ -365,6 +376,17 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
         $datapoint = $data[0];
         $this->assertEquals(count($datapoint), 2048);
+    }
+
+    public function testBatchFacialLocalization()
+    {
+        self::skipIfMissingCredentials();
+        $image = array(file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'/data_test.json'));
+        $data = IndicoIo::facial_localization($image);
+
+        $this->assertInternalType('array', $data);
+        $this->assertInternalType('array', $data[0]);
+        $this->assertInternalType('array', $data[0][0]["top_left_corner"]);
     }
 
     public function testPredictText()
