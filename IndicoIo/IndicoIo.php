@@ -3,6 +3,7 @@
 namespace IndicoIo;
 use Exception;
 use Utils\Multi as Multi;
+use Utils\Image as Image;
 use Configure\Configure as Configure;
 
 require_once("Configure.php");
@@ -14,7 +15,7 @@ require_once("Utils.php");
 class IndicoIo
 {
 	public static $config;
-	public static $TEXT_APIS = array("sentiment", "text_tags", "language", "political", "keywords");
+	public static $TEXT_APIS = array("sentiment", "sentimenthq", "named_entities", "text_tags", "language", "political", "keywords", "twitter_engagement");
 	public static $IMAGE_APIS = array("fer", "image_features", "facial_features", "content_filter");
 
 	protected static function api_url($cloud = false, $service, $batch = false, $api_key, $params = array()) {
@@ -39,6 +40,7 @@ class IndicoIo
 		return $url;
 	}
 
+
 	public static function political($text, $params=array())
 	{
 		return self::_callService($text, 'political', $params);
@@ -46,9 +48,14 @@ class IndicoIo
 
 	public static function batch_political($text, $params=array())
 	{
-		$params["batch"] = true;
-		return self::_callService($text, 'political', $params);
+		trigger_error(
+			"The `batch_political` function will be deprecated in the next major upgrade." .
+			"Please call `political` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::political($text, $params);
 	}
+
 
 	public static function sentiment($text, $params=array())
 	{
@@ -57,9 +64,14 @@ class IndicoIo
 
 	public static function batch_sentiment($text, $params=array())
 	{
-		$params["batch"] = true;
-		return self::_callService($text, 'sentiment', $params);
+		trigger_error(
+			"The `batch_sentiment` function will be deprecated in the next major upgrade." .
+			"Please call `sentiment` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::sentiment($text, $params);
 	}
+
 
 	public static function sentiment_hq($text, $params=array())
 	{
@@ -68,9 +80,14 @@ class IndicoIo
 
 	public static function batch_sentiment_hq($text, $params=array())
 	{
-		$params['batch'] = true;
-        return self::_callService($text, 'sentimenthq', $params);
+		trigger_error(
+			"The `batch_sentiment_hq` function will be deprecated in the next major upgrade." .
+			"Please call `sentiment_hq` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::sentiment_hq($text, $params);
 	}
+
 
 	public static function language($text, $params=array())
 	{
@@ -79,9 +96,14 @@ class IndicoIo
 
 	public static function batch_language($text, $params=array())
 	{
-		$params["batch"] = true;
-		return self::_callService($text, 'language', $params);
+		trigger_error(
+			"The `batch_language` function will be deprecated in the next major upgrade." .
+			"Please call `language` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::language($text, $params);
 	}
+
 
 	public static function text_tags($text, $params=array())
 	{
@@ -90,20 +112,32 @@ class IndicoIo
 
 	public static function batch_text_tags($text, $params=array())
 	{
-		$params["batch"] = true;
-		return self::_callService($text, 'texttags', $params);
+		trigger_error(
+			"The `batch_text_tags` function will be deprecated in the next major upgrade." .
+			"Please call `text_tags` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::text_tags($text, $params);
 	}
+
 
 	public static function fer($image, $params=array())
 	{
+		$size = array_key_exists("detect", $params) && $params["detect"] ? false : 48;
+		$image = Image::processImage($image, $size, false);
 		return self::_callService($image, 'fer', $params);
 	}
 
-	public static function batch_fer($images, $params=array())
+	public static function batch_fer($text, $params=array())
 	{
-		$params["batch"] = true;
-		return self::_callService($images, 'fer', $params);
+		trigger_error(
+			"The `batch_fer` function will be deprecated in the next major upgrade." .
+			"Please call `fer` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::fer($text, $params);
 	}
+
 
 	public static function keywords($text, $params=array())
 	{
@@ -112,9 +146,14 @@ class IndicoIo
 
 	public static function batch_keywords($text, $params=array())
 	{
-		$params['batch'] = true;
-		return self::_callService($text, 'keywords', $params);
+		trigger_error(
+			"The `batch_keywords` function will be deprecated in the next major upgrade." .
+			"Please call `keywords` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::keywords($text, $params);
 	}
+
 
 	public static function named_entities($text, $params=array())
 	{
@@ -123,42 +162,87 @@ class IndicoIo
 
 	public static function batch_named_entities($text, $params=array())
 	{
-		$params['batch'] = true;
-		return self::_callService($text, 'namedentities', $params);
+		trigger_error(
+			"The `batch_named_entities` function will be deprecated in the next major upgrade." .
+			"Please call `named_entities` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::named_entities($text, $params);
 	}
+
+
+	public static function twitter_engagement($text, $params=array())
+	{
+		return self::_callService($text, 'twitterengagement', $params);
+	}
+
+	public static function batch_twitter_engagement($text, $params=array())
+	{
+		trigger_error(
+			"The `batch_twitter_engagement` function will be deprecated in the next major upgrade." .
+			"Please call `twitter_engagement` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::twitter_engagement($text, $params);
+	}
+
 
 	public static function facial_features($image, $params=array())
 	{
+		$image = Image::processImage($image, 64, false);
 		return self::_callService($image, 'facialfeatures', $params);
 	}
 
-	public static function batch_facial_features($images, $params=array())
+	public static function batch_facial_features($image, $params=array())
 	{
-		$params["batch"] = true;
-		return self::_callService($images, 'facialfeatures', $params);
+		trigger_error(
+			"The `batch_facial_features` function will be deprecated in the next major upgrade." .
+			"Please call `facial_features` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::facial_features($image, $params);
 	}
+
 
 	public static function image_features($image, $params=array())
 	{
+		$image = Image::processImage($image, 64, false);
 		return self::_callService($image, 'imagefeatures', $params);
 	}
 
-	public static function batch_image_features($images, $params=array())
+	public static function batch_image_features($image, $params=array())
 	{
-		$params["batch"] = true;
-		return self::_callService($images, 'imagefeatures', $params);
+		trigger_error(
+			"The `batch_image_features` function will be deprecated in the next major upgrade." .
+			"Please call `image_features` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::image_features($image, $params);
 	}
+
 
 	public static function content_filter($image, $params=array())
 	{
+		$image = Image::processImage($image, 128, true);
 		return self::_callService($image, 'contentfiltering', $params);
 	}
 
-	public static function batch_content_filter($images, $params=array())
+	public static function batch_content_filter($image, $params=array())
 	{
-		$params["batch"] = true;
-		return self::_callService($images, 'contentfiltering', $params);
+		trigger_error(
+			"The `batch_content_filter` function will be deprecated in the next major upgrade." .
+			"Please call `content_filter` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::content_filter($image, $params);
 	}
+
+	public static function facial_localization($image, $params=array())
+	{
+		$image = Image::processImage($image, false, false);
+		return self::_callService($image, 'faciallocalization', $params);
+	}
+
 
 	# Multi API Calls
 	public static function predict_text($text, $params=array())
@@ -169,16 +253,16 @@ class IndicoIo
 		$results = self::_callService($text, "apis", $params);
 		return Multi::convertResults($results, $apis);
 	}
-
 	public static function batch_predict_text($text, $params=array())
 	{
-		$apis = self::get($params, "apis");
-		$converted_apis = Multi::filterApis($apis, self::$TEXT_APIS);
-		$params["apis"] = $converted_apis;
-		$params["batch"] = true;
-		$results = self::_callService($text, "apis", $params);
-		return Multi::convertResults($results, $apis);
+		trigger_error(
+			"The `batch_predict_text` function will be deprecated in the next major upgrade." .
+			"Please call `predict_text` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::predict_text($text, $params);
 	}
+
 
 	public static function predict_image($image, $params=array())
 	{
@@ -188,23 +272,23 @@ class IndicoIo
 		$results = self::_callService($image, "apis", $params);
 		return Multi::convertResults($results, $apis);
 	}
-
-	public static function batch_predict_image($images, $params=array())
+	public static function batch_predict_image($image, $params=array())
 	{
-		$apis = self::get($params, "apis");
-		$converted_apis = Multi::filterApis($apis, self::$IMAGE_APIS);
-		$params["apis"] = $converted_apis;
-		$params["batch"] = true;
-		$results = self::_callService($images, "apis", $params);
-		return Multi::convertResults($results, $apis);
+		trigger_error(
+			"The `batch_predict_image` function will be deprecated in the next major upgrade." .
+			"Please call `predict_image` instead with the same arguments",
+			E_USER_WARNING
+		);
+		return self::predict_image($image, $params);
 	}
+
 
 	protected static function _callService($data, $service, $params = array())
 	{
 		# Load from configuration array if present
 		$api_key = self::get($params, 'api_key');
 		$cloud = self::get($params, "cloud");
-		$batch = self::get($params, "batch");
+		$batch = gettype($data) == "array";
 		$apis = self::get($params, "apis");
 
 		# Set up Url Paramters
