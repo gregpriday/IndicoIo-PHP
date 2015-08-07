@@ -116,9 +116,31 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testKeywords()
     {
         self::skipIfMissingCredentials();
-        $data = IndicoIo::keywords('This sentence contains three keywords ...');
+        $text = "This sentence contains three keywords ...";
+        $data = IndicoIo::keywords($text);
         $keys_result = array_keys($data);
         $this->assertEquals(count($keys_result), 3);
+        $this->assertEmpty(array_diff($keys_result, explode(" ", $text)));
+    }
+
+    public function testLanguageKeywords()
+    {
+        self::skipIfMissingCredentials();
+        $text = "La semaine suivante, il remporte sa premiere victoire, dans la descente de Val Gardena en Italie, près de cinq ans après la dernière victoire en Coupe du monde d'un Français dans cette discipline, avec le succès de Nicolas Burtin à Kvitfjell.";
+        $data = IndicoIo::keywords($text, array("language" => "French"));
+        $keys_result = array_keys($data);
+        $this->assertEquals(count($keys_result), 3);
+        $this->assertEmpty(array_diff($keys_result, explode(" ", $text)));
+    }
+
+    public function testAutoLanguageKeywords()
+    {
+        self::skipIfMissingCredentials();
+        $text = "La semaine suivante, il remporte sa premiere victoire, dans la descente de Val Gardena en Italie, près de cinq ans après la dernière victoire en Coupe du monde d'un Français dans cette discipline, avec le succès de Nicolas Burtin à Kvitfjell.";
+        $data = IndicoIo::keywords($text, array("language" => "detect"));
+        $keys_result = array_keys($data);
+        $this->assertEquals(count($keys_result), 3);
+        $this->assertEmpty(array_diff($keys_result, explode(" ", $text)));
     }
 
     public function testTwitterEngagement()
