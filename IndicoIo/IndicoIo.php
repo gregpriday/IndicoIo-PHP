@@ -19,13 +19,13 @@ class IndicoIo
 	public static $IMAGE_APIS = array("fer", "image_features", "facial_features", "content_filter");
 
 	protected static function api_url($cloud = false, $service, $batch = false, $api_key, $params = array()) {
+		$root_url = self::$config['default_host'];
 		if ($cloud) {
 			$root_url = "http://$cloud.indico.domains";
 		}
 		if (!$api_key) {
 			throw new Exception("A valid API key must be provided.");
 		}
-		$root_url = self::$config['default_host'];
 		$url = "$root_url/$service";
 		if ($batch) {
 			$url = $url . "/batch";
@@ -187,6 +187,15 @@ class IndicoIo
 	}
 
 
+	public static function intersections($input, $params=array())
+	{
+		$apis = self::get($params, "apis");
+		$converted_apis = Multi::filterApis($apis, self::$TEXT_APIS);
+		$params["apis"] = $converted_apis;
+		return self::_callService($input, 'apis/intersections', $params);
+	}
+
+
 	public static function facial_features($image, $params=array())
 	{
 		$image = Image::processImage($image, 64, false);
@@ -245,41 +254,41 @@ class IndicoIo
 
 
 	# Multi API Calls
-	public static function predict_text($text, $params=array())
+	public static function analyze_text($text, $params=array())
 	{
 		$apis = self::get($params, "apis");
 		$converted_apis = Multi::filterApis($apis, self::$TEXT_APIS);
 		$params["apis"] = $converted_apis;
-		$results = self::_callService($text, "apis", $params);
+		$results = self::_callService($text, "apis/multiapi", $params);
 		return Multi::convertResults($results, $apis);
 	}
-	public static function batch_predict_text($text, $params=array())
+	public static function batch_analyze_text($text, $params=array())
 	{
 		trigger_error(
-			"The `batch_predict_text` function will be deprecated in the next major upgrade." .
-			"Please call `predict_text` instead with the same arguments",
+			"The `batch_analyze_text` function will be deprecated in the next major upgrade." .
+			"Please call `analyze_text` instead with the same arguments",
 			E_USER_WARNING
 		);
-		return self::predict_text($text, $params);
+		return self::analyze_text($text, $params);
 	}
 
 
-	public static function predict_image($image, $params=array())
+	public static function analyze_image($image, $params=array())
 	{
 		$apis = self::get($params, "apis");
 		$converted_apis = Multi::filterApis($apis, self::$IMAGE_APIS);
 		$params["apis"] = $converted_apis;
-		$results = self::_callService($image, "apis", $params);
+		$results = self::_callService($image, "apis/multiapi", $params);
 		return Multi::convertResults($results, $apis);
 	}
-	public static function batch_predict_image($image, $params=array())
+	public static function batch_analyze_image($image, $params=array())
 	{
 		trigger_error(
-			"The `batch_predict_image` function will be deprecated in the next major upgrade." .
-			"Please call `predict_image` instead with the same arguments",
+			"The `batch_analyze_image` function will be deprecated in the next major upgrade." .
+			"Please call `analyze_image` instead with the same arguments",
 			E_USER_WARNING
 		);
-		return self::predict_image($image, $params);
+		return self::analyze_image($image, $params);
 	}
 
 
@@ -288,6 +297,8 @@ class IndicoIo
 		# Load from configuration array if present
 		$api_key = self::get($params, 'api_key');
 		$cloud = self::get($params, "cloud");
+		// FIXME ONCE APIV2 IS UPDATED
+		$cloud = "dev";
 		$batch = gettype($data) == "array";
 		$apis = self::get($params, "apis");
 
@@ -300,7 +311,6 @@ class IndicoIo
 		# Set up Request
 		$query_url = self::api_url($cloud, $service, $batch, $api_key, $url_params);
 		$json_data = json_encode(array_merge(array('data' => $data), $params));
-
 		$ch = curl_init($query_url);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
@@ -314,7 +324,6 @@ class IndicoIo
 
 		$result = curl_exec($ch);
 		curl_close($ch);
-
 		$parsed = json_decode($result, $assoc = true);
 		if (array_key_exists('results', $parsed)) {
 			return $parsed['results'];

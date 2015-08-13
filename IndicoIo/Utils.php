@@ -2,6 +2,7 @@
 
 namespace Utils;
 use \Eventviva\ImageResize;
+class Exception extends \Exception {}
 
 Class Image
 {

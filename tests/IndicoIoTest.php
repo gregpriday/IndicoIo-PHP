@@ -126,21 +126,21 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testLanguageKeywords()
     {
         self::skipIfMissingCredentials();
-        $text = "La semaine suivante, il remporte sa premiere victoire, dans la descente de Val Gardena en Italie, près de cinq ans après la dernière victoire en Coupe du monde d'un Français dans cette discipline, avec le succès de Nicolas Burtin à Kvitfjell.";
+        $text = "La semaine suivante il remporte sa premiere victoire dans la descente de Val Gardena en Italie près de cinq ans après la dernière victoire en Coupe du monde d'un Français dans cette discipline avec le succès de Nicolas Burtin à Kvitfjell";
         $data = IndicoIo::keywords($text, array("language" => "French"));
         $keys_result = array_keys($data);
         $this->assertEquals(count($keys_result), 3);
-        $this->assertEmpty(array_diff($keys_result, explode(" ", $text)));
+        $this->assertEmpty(array_diff($keys_result, explode(" ", strtolower($text))));
     }
 
     public function testAutoLanguageKeywords()
     {
         self::skipIfMissingCredentials();
-        $text = "La semaine suivante, il remporte sa premiere victoire, dans la descente de Val Gardena en Italie, près de cinq ans après la dernière victoire en Coupe du monde d'un Français dans cette discipline, avec le succès de Nicolas Burtin à Kvitfjell.";
+        $text = "La semaine suivante il remporte sa premiere victoire dans la descente de Val Gardena en Italie près de cinq ans après la dernière victoire en Coupe du monde d'un Français dans cette discipline avec le succès de Nicolas Burtin à Kvitfjell";
         $data = IndicoIo::keywords($text, array("language" => "detect"));
         $keys_result = array_keys($data);
         $this->assertEquals(count($keys_result), 3);
-        $this->assertEmpty(array_diff($keys_result, explode(" ", $text)));
+        $this->assertEmpty(array_diff($keys_result, explode(" ", strtolower($text))));
     }
 
     public function testTwitterEngagement()
@@ -151,6 +151,38 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $data = IndicoIo::twitter_engagement($examples);
         $this->assertGreaterThan(0, $data);
         $this->assertGreaterThan($data, 1);
+    }
+
+    public function testIntersections()
+    {
+        self::skipIfMissingCredentials();
+        $examples = array(
+            'I want to move to New York City!',
+            'I want to live in Boston.',
+            'I hate living in the dumpster.'
+        );
+
+        $data = IndicoIo::intersections($examples, array("apis"=> array("sentiment", "text_tags")));
+        $this->assertTrue(array_key_exists("sailing", $data));
+        $this->assertTrue(array_key_exists("sentiment", $data["sailing"]));
+    }
+
+    public function testIntersectionsHistoric()
+    {
+        self::skipIfMissingCredentials();
+        $examples = array(
+            'I want to move to New York City!',
+            'I want to live in Boston.',
+            'I hate living in the dumpster.'
+        );
+        $sentiment = IndicoIo::sentiment($examples);
+        $texttags = IndicoIo::text_tags($examples);
+        $data = IndicoIo::intersections(
+            array("sentiment"=> $sentiment, "texttags" =>$texttags),
+            array("apis"=> array("sentiment", "text_tags"))
+        );
+        $this->assertTrue(array_key_exists("sailing", $data));
+        $this->assertTrue(array_key_exists("sentiment", $data["sailing"]));
     }
 
     public function testFerWhenGivenTheRightParameters()
@@ -414,7 +446,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testPredictText()
     {
         self::skipIfMissingCredentials();
-        $data = IndicoIo::predict_text('Excited to be alive!', array("apis"=>array("sentiment", "political")));
+        $data = IndicoIo::analyze_text('Excited to be alive!', array("apis"=>array("sentiment", "political")));
         $this->assertGreaterThan(0, $data["sentiment"]);
         $this->assertGreaterThan($data["sentiment"], 1);
     }
@@ -422,7 +454,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     public function testBatchPredictText()
     {
         self::skipIfMissingCredentials();
-        $data = IndicoIo::predict_text(array("Excited to be alive!", "sadness"), array("apis"=>array("sentiment", "political")));
+        $data = IndicoIo::analyze_text(array("Excited to be alive!", "sadness"), array("apis"=>array("sentiment", "political")));
         $this->assertGreaterThan(0, $data["sentiment"][0]);
         $this->assertGreaterThan($data["sentiment"][0], 1);
         $this->assertGreaterThan(.5, $data["sentiment"][1]);
@@ -433,7 +465,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     {
         self::skipIfMissingCredentials();
         $image = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'/data_test.json');
-        $data = IndicoIo::predict_image($image, array("apis"=>array("image_features")));
+        $data = IndicoIo::analyze_image($image, array("apis"=>array("image_features")));
 
         $this->assertEquals(count($data["image_features"]), 2048);
     }
@@ -443,7 +475,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         self::skipIfMissingCredentials();
         $image = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'/data_test.json');
         $examples = array($image, $image);
-        $data = IndicoIo::predict_image($examples, array("apis"=> array("image_features")));
+        $data = IndicoIo::analyze_image($examples, array("apis"=> array("image_features")));
 
         $this->assertEquals(count($data["image_features"]), count($examples));
         $datapoint = $data["image_features"][0];
