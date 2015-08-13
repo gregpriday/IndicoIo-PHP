@@ -190,6 +190,15 @@ class IndicoIo
 	public static function intersections($input, $params=array())
 	{
 		$apis = self::get($params, "apis");
+		if (is_array($input) && array_keys($input) !== range(0, count($input) - 1)) {
+			$diff = array_diff(array_keys($input), $apis);
+			if (!empty($diff)) {
+				trigger_error(
+					"The `intersections` function expects the input to have the same keys as what is provided in `apis`",
+					E_USER_WARNING
+				);
+			}
+		}
 		$converted_apis = Multi::filterApis($apis, self::$TEXT_APIS);
 		$params["apis"] = $converted_apis;
 		return self::_callService($input, 'apis/intersections', $params);
@@ -297,8 +306,6 @@ class IndicoIo
 		# Load from configuration array if present
 		$api_key = self::get($params, 'api_key');
 		$cloud = self::get($params, "cloud");
-		// FIXME ONCE APIV2 IS UPDATED
-		$cloud = "dev";
 		$batch = gettype($data) == "array";
 		$apis = self::get($params, "apis");
 

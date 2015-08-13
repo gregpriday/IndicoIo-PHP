@@ -162,7 +162,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
             'I hate living in the dumpster.'
         );
 
-        $data = IndicoIo::intersections($examples, array("apis"=> array("sentiment", "text_tags")));
+        $data = IndicoIo::intersections($examples, array("apis"=> array("text_tags", "sentiment")));
         $this->assertTrue(array_key_exists("sailing", $data));
         $this->assertTrue(array_key_exists("sentiment", $data["sailing"]));
     }
@@ -178,8 +178,8 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $sentiment = IndicoIo::sentiment($examples);
         $texttags = IndicoIo::text_tags($examples);
         $data = IndicoIo::intersections(
-            array("sentiment"=> $sentiment, "texttags" =>$texttags),
-            array("apis"=> array("sentiment", "text_tags"))
+            array("sentiment"=> $sentiment, "text_tags" =>$texttags),
+            array("apis"=> array("text_tags", "sentiment"))
         );
         $this->assertTrue(array_key_exists("sailing", $data));
         $this->assertTrue(array_key_exists("sentiment", $data["sailing"]));
