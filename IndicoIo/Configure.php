@@ -38,7 +38,7 @@ Class Configure
             }
 
             $authDefined = (
-                array_key_exists('auth', $parsed_config) &&    
+                array_key_exists('auth', $parsed_config) &&
                 array_key_exists('api_key', $parsed_config['auth'])
             );
             if ($authDefined) {
