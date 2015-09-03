@@ -21,5 +21,12 @@ class IndicoIoVersionTest extends \PHPUnit_Framework_TestCase
         $this->assertGreaterThan(0, $data);
         $this->assertGreaterThan($data, 1);
     }
+    public function testImageFeaturesV2()
+    {
+        self::skipIfMissingCredentials();
+        $image = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'/data_test.json');
+        $data = IndicoIo::image_features($image, array("version" => 2));
+        $this->assertEquals(count($data), 4096);
+    }
 
 }
