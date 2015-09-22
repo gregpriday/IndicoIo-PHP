@@ -16,7 +16,7 @@ class IndicoIo
 {
 	public static $config;
 	public static $TEXT_APIS = array("sentiment", "sentimenthq", "named_entities", "text_tags", "language", "political", "keywords", "twitter_engagement");
-	public static $IMAGE_APIS = array("fer", "image_features", "facial_features", "content_filter");
+	public static $IMAGE_APIS = array("fer", "image_features", "image_recognition", "facial_features", "content_filter");
 
 	protected static function api_url($cloud = false, $service, $batch = false, $api_key, $params = array()) {
 		$root_url = self::$config['default_host'];
@@ -224,8 +224,14 @@ class IndicoIo
 
 	public static function image_features($image, $params=array())
 	{
-		$image = Image::processImage($image, 64, false);
+		$image = Image::processImage($image, 144, true);
 		return self::_callService($image, 'imagefeatures', $params);
+	}
+
+	public static function image_recognition($image, $params=array())
+	{
+		$image = Image::processImage($image, 144, true);
+		return self::_callService($image, 'imagerecognition', $params);
 	}
 
 	public static function batch_image_features($image, $params=array())
@@ -308,11 +314,15 @@ class IndicoIo
 		$cloud = self::get($params, "cloud");
 		$batch = gettype($data) == "array";
 		$apis = self::get($params, "apis");
+		$version = self::get($params, "version");
 
 		# Set up Url Paramters
 		$url_params = array();
 		if ($apis) {
 			$url_params["apis"] = $apis;
+		}
+		if ($version) {
+			$url_params["version"] = $version;
 		}
 
 		# Set up Request
@@ -326,7 +336,7 @@ class IndicoIo
 			'Content-Type: application/json',
 			'Content-Length: ' . strlen($json_data),
 			'client-lib: php',
-				'version-number: 0.1.0'
+				'version-number: 0.1.2'
 		));
 
 		$result = curl_exec($ch);
