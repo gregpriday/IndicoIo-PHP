@@ -327,7 +327,7 @@ class IndicoIo
 
 		# Set up Request
 		$query_url = self::api_url($cloud, $service, $batch, $api_key, $url_params);
-		$json_data = json_encode(array_merge(array('data' => $data), $params));
+		$json_data = json_encode(array_merge(array('data' => $data), $params), JSON_NUMERIC_CHECK);
 		$ch = curl_init($query_url);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
