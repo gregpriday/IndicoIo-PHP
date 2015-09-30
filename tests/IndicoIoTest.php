@@ -103,6 +103,15 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($keys_result), 10);
     }
 
+    public function testThreshold() 
+    {
+        $data = IndicoIo::text_tags('I want to move to New York City!', array("threshold"=>0.05));
+        $values = array_values($data);
+        for ($i = 0; $i < count($values); $i++) {
+            $this->assertGreaterThan(0.05, $values[$i]);
+        } 
+    }
+
     public function testNamedEntities()
     {
         self::skipIfMissingCredentials();
