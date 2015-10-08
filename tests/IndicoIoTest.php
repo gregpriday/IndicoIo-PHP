@@ -215,6 +215,20 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($keys_expected, $keys_result);
     }
 
+    public function testURLSupport()
+    {
+        self::skipIfMissingCredentials();
+        $keys_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
+        $image = "https://s3-us-west-2.amazonaws.com/indico-test-data/face.jpg";
+        $data = IndicoIo::fer($image);
+        $keys_result = array_keys($data);
+
+        sort($keys_result);
+        sort($keys_expected);
+
+        $this->assertEquals($keys_expected, $keys_result);
+    }
+
     public function testFacialLocalizationWhenGivenTheRightParameters()
     {
         self::skipIfMissingCredentials();
