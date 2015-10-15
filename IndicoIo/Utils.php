@@ -14,6 +14,11 @@ Class Image
 
         return $array;
     }
+
+    public static function isValidURL($url) { 
+        return filter_var($url, FILTER_VALIDATE_URL) !== false;
+    }
+
     public static function processImage($string, $size, $min_axis) {
         if (gettype($string) == "array") {
             return self::processImages($string ,$size, $min_axis);
@@ -21,6 +26,8 @@ Class Image
 
         if (file_exists($string)) {
             return self::resizeImage(new ImageResize($string), $size, $min_axis);
+        } else if (self::isValidURL($string)) {
+            return $string; 
         } else {
             return self::resizeImage(
                 ImageResize::createFromString(base64_decode($string)),
