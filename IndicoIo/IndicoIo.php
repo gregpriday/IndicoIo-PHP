@@ -329,6 +329,7 @@ class IndicoIo
 		$query_url = self::api_url($cloud, $service, $batch, $api_key, $url_params);
 		$json_data = json_encode(array_merge(array('data' => $data), $params), JSON_NUMERIC_CHECK);
 		$ch = curl_init($query_url);
+		curl_setopt($ch, CURLOPT_HEADER, true);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $json_data);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -339,8 +340,22 @@ class IndicoIo
 				'version-number: 0.1.2'
 		));
 
-		$result = curl_exec($ch);
+		$response = curl_exec($ch);
+
+		$header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+		$headers = mb_substr($response, 0, $header_size);
+		$result = mb_substr($response, $header_size);  
+
+		$headers = explode("\n", $headers);
+		foreach($headers as $header) {
+		    if (stripos($header, 'x-warning:') !== false) {
+		    	list ($key, $value) = explode(':', $header, 1);
+		        trigger_error($value, E_USER_WARNING);
+		    }
+		}
+
 		curl_close($ch);
+
 		$parsed = json_decode($result, $assoc = true);
 		if (array_key_exists('results', $parsed)) {
 			return $parsed['results'];
