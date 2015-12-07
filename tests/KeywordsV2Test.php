@@ -21,7 +21,7 @@ class KeywordsV2Test extends \PHPUnit_Framework_TestCase
         $results = IndicoIo::keywords($text, array("version" => 2));
         $keywords = array_keys($results);
         foreach ($keywords as $keyword) {
-            $this->assertTrue(strpos($text, $keyword));
+            $this->assertTrue(strpos($text, $keyword) !== -1);
         }
     }
     public function testBatchKeywordsV2()
@@ -33,7 +33,7 @@ class KeywordsV2Test extends \PHPUnit_Framework_TestCase
         $keywords = array_keys($results[0]);
 
         foreach ($keywords as $keyword) {
-            $this->assertTrue(strpos($text, $keyword));
+            $this->assertTrue(strpos($text, $keyword) !== -1);
         }
     }
 
