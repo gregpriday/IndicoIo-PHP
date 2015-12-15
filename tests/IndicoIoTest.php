@@ -8,7 +8,6 @@ use \Eventviva\ImageResize;
 
 \PHPUnit_Framework_Error_Warning::$enabled = FALSE;
 
-
 class IndicoIoTest extends \PHPUnit_Framework_TestCase
 {
     private function skipIfMissingCredentials()
@@ -185,6 +184,89 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $data = IndicoIo::twitter_engagement($examples);
         $this->assertGreaterThan(0, $data);
         $this->assertGreaterThan($data, 1);
+    }
+
+    public function testPeople()
+    {
+        self::skipIfMissingCredentials();
+        $text = 'Barack Obama is scheduled to give a talk next Saturday at the White House.';
+        $result = IndicoIo::people($text);
+        $this->assertArrayHasKey('text', $result[0]);
+        $this->assertArrayHasKey('confidence', $result[0]);
+        $this->assertArrayHasKey('position', $result[0]);
+    }
+
+    public function testBatchPeople()
+    {
+        self::skipIfMissingCredentials();
+        $text = array_fill(0, 2, 'Barack Obama is scheduled to give a talk next Saturday at the White House.');
+        $result = IndicoIo::people($text);
+        $this->assertArrayHasKey('text', $result[0][0]);
+        $this->assertArrayHasKey('confidence', $result[0][0]);
+        $this->assertArrayHasKey('position', $result[0][0]);
+        $this->assertEquals(count($result), count($text));
+    }
+
+    public function testPlaces()
+    {
+        self::skipIfMissingCredentials();
+        $text = "Lets all go to Virginia Beach before it gets too cold to wander outside.";
+        $result = IndicoIo::places($text);
+        $this->assertArrayHasKey('text', $result[0]);
+        $this->assertArrayHasKey('confidence', $result[0]);
+        $this->assertArrayHasKey('position', $result[0]);
+    }
+
+    public function testBatchPlaces()
+    {
+        self::skipIfMissingCredentials();
+        $text = array_fill(0, 2, "Lets all go to Virginia Beach before it gets too cold to wander outside.");
+        $result = IndicoIo::places($text);
+        $this->assertArrayHasKey('text', $result[0][0]);
+        $this->assertArrayHasKey('confidence', $result[0][0]);
+        $this->assertArrayHasKey('position', $result[0][0]);
+        $this->assertEquals(count($result), count($text));
+    }
+
+    public function testOrganizations()
+    {
+        self::skipIfMissingCredentials();
+        $text = "A year ago, the New York Times published confidential comments about ISIS' ideology by Major General Michael K. Nagata, then U.S. Special Operations commander in the Middle East.";
+        $result = IndicoIo::organizations($text);
+        $this->assertArrayHasKey('text', $result[0]);
+        $this->assertArrayHasKey('confidence', $result[0]);
+        $this->assertArrayHasKey('position', $result[0]);
+    }
+
+    public function testBatchOrganizations()
+    {
+        self::skipIfMissingCredentials();
+        $text = array_fill(0, 2, "A year ago, the New York Times published confidential comments about ISIS' ideology by Major General Michael K. Nagata, then U.S. Special Operations commander in the Middle East.");
+        $result = IndicoIo::organizations($text);
+        $this->assertArrayHasKey('text', $result[0][0]);
+        $this->assertArrayHasKey('confidence', $result[0][0]);
+        $this->assertArrayHasKey('position', $result[0][0]);
+        $this->assertEquals(count($result), count($text));
+    }
+
+    public function testRelevance()
+    {
+        self::skipIfMissingCredentials();
+        $text = "president";
+        $queries = "president";
+        $result = IndicoIo::relevance($text, $queries);
+        $this->assertGreaterThan(0.5, $result);
+    }
+
+    public function testBatchRelevance()
+    {
+        self::skipIfMissingCredentials();
+        $text = ["president", "Barack Obama"];
+        $queries = ["president", "prime minister"];
+        $result = IndicoIo::relevance($text, $queries);
+        $this->assertGreaterThan(0.5, $result[0][0]);
+        $this->assertEquals(count($result), 2);
+        $this->assertEquals(count($result[0]), 2);
     }
 
     public function testIntersections()
