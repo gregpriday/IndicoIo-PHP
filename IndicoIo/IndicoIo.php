@@ -95,6 +95,27 @@ class IndicoIo
 		return self::_callService($text, 'twitterengagement', 'predict', $params);
 	}
 
+    public static function people($text, $params=array())
+    {
+        return self::_callService($text, 'people', 'predict', $params);
+    }
+
+    public static function places($text, $params=array())
+    {
+        return self::_callService($text, 'places', 'predict', $params);
+    }
+
+    public static function organizations($text, $params=array())
+    {
+        return self::_callService($text, 'organizations', 'predict', $params);
+    }
+
+    public static function relevance($text, $queries, $params=array())
+    {
+        $params['queries'] = $queries;
+        return self::_callService($text, 'relevance', 'predict', $params);
+    }
+
 	public static function intersections($input, $params=array())
 	{
 		$apis = self::get($params, "apis");
@@ -151,7 +172,7 @@ class IndicoIo
         return self::_callService($text, 'personality', 'predict', $params);
     }
 
-    public static function personas($text, $params)
+    public static function personas($text, $params=array())
     {
         $params['persona'] = True;
         return self::_callService($text, 'personality', 'predict', $params);
