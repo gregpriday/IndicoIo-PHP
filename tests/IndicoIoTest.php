@@ -269,6 +269,24 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($result[0]), 2);
     }
 
+    public function testTextFeatures()
+    {
+        self::skipIfMissingCredentials();
+        $text = "Queen of England";
+        $result = IndicoIo::text_features($text);
+        $this->assertEquals(count($result), 300);
+    }
+
+    public function testBatchTextFeatures()
+    {
+        self::skipIfMissingCredentials();
+        $text = ["Queen of England", "Prime Minister of Canada"];
+        $result = IndicoIo::text_features($text);
+        $this->assertEquals(count($result), 2);
+        $this->assertEquals(count($result[0]), 300);
+        $this->assertEquals(count($result[1]), 300);
+    }
+
     public function testIntersections()
     {
         self::skipIfMissingCredentials();

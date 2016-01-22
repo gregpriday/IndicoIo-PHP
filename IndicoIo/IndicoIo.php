@@ -116,6 +116,11 @@ class IndicoIo
         return self::_callService($text, 'relevance', 'predict', $params);
     }
 
+    public static function text_features($text, $params=array())
+    {
+        return self::_callService($text, 'textfeatures', 'predict', $params);
+    }
+
 	public static function intersections($input, $params=array())
 	{
 		$apis = self::get($params, "apis");
