@@ -6,25 +6,26 @@ IndicoIo-php
 PHP Rest Api Wrapper for IndicoIo
 
 
-
 Installation
 --------------
-
-1. Create (if not done yet) composer.json file on your project directory.
-
-2. Add this to the file :
-
+1. [Install PHP](http://php.net/downloads.php), if not present.
+2. Install Composer (If on windows, you may need to [configure php-openssl](http://www.herongyang.com/PKI/HTTPS-PHP-Configure-PHP-OpenSSL-on-Windows.html))
+3. Create (if not done yet) composer.json file on your project directory.
+4. Add this to the file :
 ```json
 {
-	"require":{
-		"indicoio/indicoio-php": "*"
-	}
+    "repositories": [
+        {
+            "url": "https://github.com/IndicoDataSolutions/IndicoIo-PHP.git",
+            "type": "git"
+        }
+    ],
+    "require": {
+        "indicoio/indicoio-php": "*"
+    }
 }
-
 ```
-3. Run this command :
-
-
+5. Run this command :
 ```sh
 composer install
 ```
