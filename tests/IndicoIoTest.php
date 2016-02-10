@@ -647,7 +647,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $image = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'/data_test.json');
         $data = IndicoIo::analyze_image($image, array("apis"=>array("image_features")));
 
-        $this->assertEquals(count($data["image_features"]), 2048);
+        $this->assertEquals(count($data["image_features"]), 4096);
     }
 
     public function testBatchPredictImage()
@@ -659,7 +659,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(count($data["image_features"]), count($examples));
         $datapoint = $data["image_features"][0];
-        $this->assertEquals(count($datapoint), 2048);
+        $this->assertEquals(count($datapoint), 4096);
     }
 
     public function testConfigureFromEnvironmentVariables()
