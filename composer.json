@@ -1,7 +1,7 @@
 {
     "name": "indicoio/indicoio-php",
     "description": "Rest Api Wrapper for PHP.",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "keywords": ["Rest Api Wrapper for PHP", "IndicoIo"],
     "type": "project",
     "require": {
@@ -14,5 +14,6 @@
     },
     "autoload": {
         "psr-4": {"IndicoIo\\": "IndicoIo/"}
-    }
+    },
+    "minimum-stability": "dev"
 }
