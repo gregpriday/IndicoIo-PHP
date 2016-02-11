@@ -14,5 +14,6 @@
     },
     "autoload": {
         "psr-4": {"IndicoIo\\": "IndicoIo/"}
-    }
+    },
+    "minimum-stability": "dev"
 }
