@@ -147,7 +147,7 @@ class IndicoIo
 
 	public static function image_features($image, $params=array())
 	{
-		$image = Image::processImage($image, 144, true);
+		$image = Image::processImage($image, 512, true);
 		if (!array_key_exists('v', $params) || !array_key_exists('version', $params)){
 			$params['version'] = 3;
 		}
