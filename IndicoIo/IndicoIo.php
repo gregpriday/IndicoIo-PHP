@@ -287,14 +287,17 @@ class IndicoIo
 class Collection
 {
     var $name;
+    var $domain;
 
-    function __construct($name)
+    function __construct($name, $domain=NULL)
     {
         $this->name = $name;
+        $this->domain = $domain;
     }
 
     function addData($data, $params=array()) {
      	$params['collection'] = $this->name;
+     	$params['domain'] = array_key_exists("domain", $params) ? $params["domain"] : $this->domain;
      	if (gettype($data[0]) != 'array') {
      		$params['batch'] = False;
      		try {
@@ -318,6 +321,7 @@ class Collection
     }
 
     function predict($data, $params=array()) {
+		$params['domain'] = array_key_exists("domain", $params) ? $params["domain"] : $this->domain;
     	$params['collection'] = $this->name;
     	try {
     		$data = Image::processImage($data, 512, true);
