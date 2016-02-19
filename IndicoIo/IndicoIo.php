@@ -208,7 +208,7 @@ class IndicoIo
 		$api_key = self::get($params, 'api_key');
 		$cloud = self::get($params, "cloud");
 		$batch = gettype($data) == "array";
-		
+
 		# Override $batch for custom API addData method
 		if ($method == 'add_data' && !self::get($params, "batch")) {
 			$batch = False;
@@ -287,18 +287,21 @@ class IndicoIo
 class Collection
 {
     var $name;
+    var $domain;
 
-    function __construct($name)
+    function __construct($name, $domain=NULL)
     {
         $this->name = $name;
+        $this->domain = $domain;
     }
 
     function addData($data, $params=array()) {
      	$params['collection'] = $this->name;
+     	$params['domain'] = array_key_exists("domain", $params) ? $params["domain"] : $this->domain;
      	if (gettype($data[0]) != 'array') {
      		$params['batch'] = False;
      		try {
-     			$data[0] = Image::processImage($data[0], 144, true);
+     			$data[0] = Image::processImage($data[0], 512, true);
      		} catch (ImageException $e) {}
      	} else {
      		$params['batch'] = True;
@@ -309,7 +312,7 @@ class Collection
      				array_push($x, $pair[0]);
      				array_push($y, $pair[1]);
      			}
-     			$x = Image::processImage($x, 144, true);
+     			$x = Image::processImage($x, 512, true);
                 // equivalent to python's zip(x, y)
      			$data = array_map(NULL, $x, $y);
      		} catch (ImageException $e) {}
@@ -318,17 +321,18 @@ class Collection
     }
 
     function predict($data, $params=array()) {
+		$params['domain'] = array_key_exists("domain", $params) ? $params["domain"] : $this->domain;
     	$params['collection'] = $this->name;
     	try {
-    		$data = Image::processImage($data, 144, true);	
+    		$data = Image::processImage($data, 512, true);
     	} catch (ImageException $e) {}
     	return IndicoIo::_callService($data, 'custom', 'predict', $params);
     }
 
     function removeExample($data, $params=array()) {
-    	$params['collection'] = $this->name; 
+    	$params['collection'] = $this->name;
     	try {
-    		$data = Image::processImage($data, 144, true);	
+    		$data = Image::processImage($data, 512, true);
     	} catch (ImageException $e) {}
     	return IndicoIo::_callService($data, 'custom', 'remove_example', $params);
     }
@@ -344,7 +348,17 @@ class Collection
     }
 
     function wait($interval=1, $params=array()) {
-    	while ($this->info()['status'] != "ready") {
+    	while (TRUE) {
+				$status = $this->info()['status'];
+				if ($status == "ready") {
+					break;
+				} else if ($status != "training") {
+					trigger_error(
+						"The `collection` training has ended with the failure: " + $status,
+						E_USER_WARNING
+					);
+					break;
+				}
     		sleep($interval);
     	}
     }
