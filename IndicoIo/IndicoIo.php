@@ -82,6 +82,14 @@ class IndicoIo
 
 	public static function keywords($text, $params=array())
 	{
+		if (!array_key_exists('v', $params) || !array_key_exists('version', $params)) {
+			$params['version'] = 2;
+		}
+
+		if (array_key_exists("language", $params) && $params["language"] != "english") {
+			$params["version"] = 1;
+		}
+
 		return self::_callService($text, 'keywords', 'predict', $params);
 	}
 
