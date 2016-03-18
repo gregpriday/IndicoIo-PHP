@@ -13,14 +13,14 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
     private function skipIfMissingCredentials()
     {
         if (!IndicoIo::$config['api_key']) {
-            $this->markTestSkipped('No auth credentials provided, skipping batch tests...');
+            $this->markTestSkipped('No auth credentials provided, skipping tests...');
         }
     }
 
     private function skipIfMissingEnvironmentVars()
     {
         if (!getenv("INDICO_API_KEY")) {
-            $this->markTestSkipped('No auth credentials provided, skipping batch tests...');
+            $this->markTestSkipped('No auth credentials provided, skipping tests...');
         }
     }
 
@@ -36,6 +36,21 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($keys_expected, $keys_result);
     }
+
+
+    public function testEmotionWhenGivenTheRightParameters()
+    {
+        self::skipIfMissingCredentials();
+        $keys_expected = array('anger', 'joy', 'fear', 'sadness', 'surprise');
+        $data = IndicoIo::emotion('save the whales');
+        $keys_result = array_keys($data);
+
+        sort($keys_expected);
+        sort($keys_result);
+
+        $this->assertEquals($keys_expected, $keys_result);
+    }
+
 
     /**
      * @expectedException Exception
