@@ -51,6 +51,11 @@ class IndicoIo
 		return self::_callService($text, 'political', 'predict', $params);
 	}
 
+    public static function emotion($text, $params=array())
+    {
+        return self::_callService($text, 'emotion', 'predict', $params);
+    }
+
 	public static function sentiment($text, $params=array())
 	{
 		return self::_callService($text, 'sentiment', 'predict', $params);
