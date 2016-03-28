@@ -229,6 +229,9 @@ class IndicoIo
 
 		$apis = self::get($params, "apis");
 		$version = self::get($params, "version");
+		unset($params["apis"]);
+		unset($params["version"]);
+		unset($params["batch"]);
 
 		# Set up Url Paramters
 		$url_params = array();
