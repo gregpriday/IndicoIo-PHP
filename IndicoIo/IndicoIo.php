@@ -22,11 +22,12 @@ class IndicoIo
 	protected static function api_url($cloud = false, $service, $batch = false, $method = false, $api_key, $params = array()) {
 		$root_url = self::$config['default_host'];
 		if ($cloud) {
-			$root_url = "http://$cloud.indico.domains";
+			$root_url = "https://$cloud.indico.domains";
 		}
 		if (!$api_key) {
 			throw new Exception("A valid API key must be provided.");
 		}
+
 		$url = "$root_url/$service";
 		if ($batch) {
 			$url = $url . "/batch";
@@ -36,12 +37,11 @@ class IndicoIo
 			$url = $url . "/" . $method;
 		}
 
-		$url = $url . "?key=" . $api_key;
-
-		foreach ($params as $key => $value) {
-			$url = $url . "&" . $key . "=" . $value;
+		if (!empty($params)) {
+			$url = $url . "?";
 		}
 
+		$url = $url . http_build_query($params);
 		return $url;
 	}
 
@@ -229,12 +229,18 @@ class IndicoIo
 
 		$apis = self::get($params, "apis");
 		$version = self::get($params, "version");
+		unset($params["apis"]);
+		unset($params["version"]);
+		unset($params["batch"]);
 
 		# Set up Url Paramters
 		$url_params = array();
+
+		# apis is already an imploded string here. might want to move that logic here.
 		if ($apis) {
 			$url_params["apis"] = $apis;
 		}
+
 		if ($version) {
 			$url_params["version"] = $version;
 		}
@@ -251,7 +257,8 @@ class IndicoIo
 			'Content-Type: application/json',
 			'Content-Length: ' . strlen($json_data),
 			'client-lib: php',
-				'version-number: 0.1.2'
+			'version-number: 0.2.0',
+			'X-ApiKey: ' . $api_key
 		));
 
 		$response = curl_exec($ch);
