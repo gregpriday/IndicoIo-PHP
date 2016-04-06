@@ -144,23 +144,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(in_array('commander', $keys_result));
     }
 
-    public function testNamedEntities()
-    {
-        self::skipIfMissingCredentials();
-        $data = IndicoIo::named_entities('I want to move to New York City!');
-
-        $first_key_result = array_keys($data)[0];
-        $values = $data[$first_key_result];
-        $ne_keys = array_keys($values);
-        $this->assertEquals($ne_keys, ['confidence', 'categories']);
-
-        $categories_hash = $values['categories'];
-        $categories = ['unknown', 'organization', 'location', 'person'];
-        $this->assertEquals(array_keys($categories_hash), $categories);
-
-        $this->assertGreaterThan(.999, array_sum(array_values($categories_hash)));
-    }
-
     public function testKeywords()
     {
         self::skipIfMissingCredentials();
@@ -514,28 +497,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(in_array('commander', $keys_result));
     }
 
-    public function testBatchNamedEntities()
-    {
-        self::skipIfMissingCredentials();
-        $examples = array(
-            'I want to move to New York City!',
-            'Do you prefer Gandalf the Grey or Gandalf the White?'
-        );
-        $data = IndicoIo::named_entities($examples);
-        $this->assertEquals(count($data), count($examples));
-
-        $datapoint = $data[0];
-        $first_key_result = array_keys($datapoint)[0];
-        $values = $datapoint[$first_key_result];
-        $ne_keys = array_keys($values);
-        $this->assertEquals($ne_keys, ['confidence', 'categories']);
-
-        $categories_hash = $values['categories'];
-        $categories = ['unknown', 'organization', 'location', 'person'];
-        $this->assertEquals(array_keys($categories_hash), $categories);
-
-        $this->assertGreaterThan(.999, array_sum(array_values($categories_hash)));
-    }
 
     public function testBatchTwitterEngagement()
     {
