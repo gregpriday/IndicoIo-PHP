@@ -16,7 +16,7 @@ require_once("Utils.php");
 class IndicoIo
 {
 	public static $config;
-	public static $TEXT_APIS = array("sentiment", "sentimenthq", "named_entities", "text_tags", "language", "political", "keywords", "twitter_engagement", "personality");
+	public static $TEXT_APIS = array("sentiment", "sentimenthq", "text_tags", "language", "political", "keywords", "twitter_engagement", "personality");
 	public static $IMAGE_APIS = array("fer", "image_features", "image_recognition", "facial_features", "content_filter");
 
 	protected static function api_url($cloud = false, $service, $batch = false, $method = false, $api_key, $params = array()) {
@@ -98,10 +98,6 @@ class IndicoIo
 		return self::_callService($text, 'keywords', 'predict', $params);
 	}
 
-	public static function named_entities($text, $params=array())
-	{
-		return self::_callService($text, 'namedentities', 'predict', $params);
-	}
 
 	public static function twitter_engagement($text, $params=array())
 	{
