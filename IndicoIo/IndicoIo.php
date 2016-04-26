@@ -360,9 +360,9 @@ class Collection
     	return IndicoIo::_callService(NULL, 'custom', 'train', $params);
     }
 
-
     function info($params=array()) {
-    	return IndicoIo::collections()[$this->name];
+        $params['collection'] = $this->name;
+        return IndicoIo::_callService(NULL, 'custom', 'info', $params);
     }
 
     function wait($interval=1, $params=array()) {
