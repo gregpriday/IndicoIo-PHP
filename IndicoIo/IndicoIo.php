@@ -48,13 +48,16 @@ class IndicoIo
 
 	public static function political($text, $params=array())
 	{
+		if (!array_key_exists('v', $params) || !array_key_exists('version', $params)) {
+			$params['version'] = 2;
+		}
 		return self::_callService($text, 'political', 'predict', $params);
 	}
 
-    public static function emotion($text, $params=array())
-    {
-        return self::_callService($text, 'emotion', 'predict', $params);
-    }
+  public static function emotion($text, $params=array())
+  {
+      return self::_callService($text, 'emotion', 'predict', $params);
+  }
 
 	public static function sentiment($text, $params=array())
 	{

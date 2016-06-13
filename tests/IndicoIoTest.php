@@ -24,20 +24,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testPoliticalWhenGivenTheRightParameters()
-    {
-        self::skipIfMissingCredentials();
-        $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
-        $data = IndicoIo::political('save the whales');
-        $keys_result = array_keys($data);
-
-        sort($keys_expected);
-        sort($keys_result);
-
-        $this->assertEquals($keys_expected, $keys_result);
-    }
-
-
     public function testEmotionWhenGivenTheRightParameters()
     {
         self::skipIfMissingCredentials();
@@ -396,24 +382,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($data), count($examples));
         $this->assertInternalType('array', $data);
         $this->assertInternalType('float', $data[0]);
-    }
-
-    public function testBatchPolitical()
-    {
-        self::skipIfMissingCredentials();
-        $keys_expected = array('Libertarian', 'Liberal', 'Green', 'Conservative');
-        $examples = array('save the whales', 'cut taxes');
-        $data = IndicoIo::political($examples);
-
-        $this->assertEquals(count($data), count($examples));
-
-        $datapoint = $data[0];
-        $keys_result = array_keys($datapoint);
-
-        sort($keys_expected);
-        sort($keys_result);
-
-        $this->assertEquals($keys_expected, $keys_result);
     }
 
     public function testBatchSentiment()
