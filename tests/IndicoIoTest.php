@@ -178,6 +178,10 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('text', $result[0]);
         $this->assertArrayHasKey('confidence', $result[0]);
         $this->assertArrayHasKey('position', $result[0]);
+
+        $result_v1 = IndicoIo::people($text, $params=array("version"=>1));
+        $this->assertNotEquals($result[0]['confidence'], $result_v1[0]['confidence']);
+
     }
 
     public function testBatchPeople()
@@ -189,27 +193,36 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('confidence', $result[0][0]);
         $this->assertArrayHasKey('position', $result[0][0]);
         $this->assertEquals(count($result), count($text));
+
+        $result_v1 = IndicoIo::people($text, $params=array("version"=>1));
+        $this->assertNotEquals($result[0][0]['confidence'], $result_v1[0][0]['confidence']);
     }
 
     public function testPlaces()
     {
         self::skipIfMissingCredentials();
-        $text = "Lets all go to Virginia Beach before it gets too cold to wander outside.";
+        $text = "Lets all go to Virginia beach before it gets too cold to wander outside.";
         $result = IndicoIo::places($text);
         $this->assertArrayHasKey('text', $result[0]);
         $this->assertArrayHasKey('confidence', $result[0]);
         $this->assertArrayHasKey('position', $result[0]);
+
+        $result_v1 = IndicoIo::places($text, $params=array("version"=>1));
+        $this->assertNotEquals($result[0]['confidence'], $result_v1[0]['confidence']);
     }
 
     public function testBatchPlaces()
     {
         self::skipIfMissingCredentials();
-        $text = array_fill(0, 2, "Lets all go to Virginia Beach before it gets too cold to wander outside.");
+        $text = array_fill(0, 2, "Lets all go to Virginia beach before it gets too cold to wander outside.");
         $result = IndicoIo::places($text);
         $this->assertArrayHasKey('text', $result[0][0]);
         $this->assertArrayHasKey('confidence', $result[0][0]);
         $this->assertArrayHasKey('position', $result[0][0]);
         $this->assertEquals(count($result), count($text));
+
+        $result_v1 = IndicoIo::places($text, $params=array("version"=>1));
+        $this->assertNotEquals($result[0][0]['confidence'], $result_v1[0][0]['confidence']);
     }
 
     public function testOrganizations()
@@ -220,6 +233,9 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('text', $result[0]);
         $this->assertArrayHasKey('confidence', $result[0]);
         $this->assertArrayHasKey('position', $result[0]);
+
+        $result_v1 = IndicoIo::organizations($text, $params=array("version"=>1));
+        $this->assertNotEquals($result[0]['confidence'], $result_v1[0]['confidence']);
     }
 
     public function testBatchOrganizations()
@@ -231,6 +247,9 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('confidence', $result[0][0]);
         $this->assertArrayHasKey('position', $result[0][0]);
         $this->assertEquals(count($result), count($text));
+
+        $result_v1 = IndicoIo::organizations($text, $params=array("version"=>1));
+        $this->assertNotEquals($result[0][0]['confidence'], $result_v1[0][0]['confidence']);
     }
 
     public function testRelevance()
