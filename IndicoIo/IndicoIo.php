@@ -48,7 +48,7 @@ class IndicoIo
 
 	public static function political($text, $params=array())
 	{
-		if (!array_key_exists('v', $params) || !array_key_exists('version', $params)) {
+		if (!array_key_exists('v', $params) && !array_key_exists('version', $params)) {
 			$params['version'] = 2;
 		}
 		return self::_callService($text, 'political', 'predict', $params);
@@ -90,7 +90,7 @@ class IndicoIo
 
 	public static function keywords($text, $params=array())
 	{
-		if (!array_key_exists('v', $params) || !array_key_exists('version', $params)) {
+		if (!array_key_exists('v', $params) && !array_key_exists('version', $params)) {
 			$params['version'] = 2;
 		}
 
@@ -109,16 +109,25 @@ class IndicoIo
 
     public static function people($text, $params=array())
     {
+        if (!array_key_exists('v', $params) && !array_key_exists('version', $params)){
+            $params['version'] = 2;
+        }
         return self::_callService($text, 'people', 'predict', $params);
     }
 
     public static function places($text, $params=array())
     {
+        if (!array_key_exists('v', $params) && !array_key_exists('version', $params)){
+            $params['version'] = 2;
+        }
         return self::_callService($text, 'places', 'predict', $params);
     }
 
     public static function organizations($text, $params=array())
     {
+        if (!array_key_exists('v', $params) && !array_key_exists('version', $params)){
+            $params['version'] = 2;
+        }
         return self::_callService($text, 'organizations', 'predict', $params);
     }
 
@@ -318,7 +327,9 @@ class Collection
 
     function addData($data, $params=array()) {
      	$params['collection'] = $this->name;
-     	$params['domain'] = array_key_exists("domain", $params) ? $params["domain"] : $this->domain;
+        if ($this->domain) {
+            $params['domain'] = $this->domain;
+        }
      	if (gettype($data[0]) != 'array') {
      		$params['batch'] = False;
      		try {
@@ -342,7 +353,9 @@ class Collection
     }
 
     function predict($data, $params=array()) {
-		$params['domain'] = array_key_exists("domain", $params) ? $params["domain"] : $this->domain;
+        if ($this->domain) {
+            $params['domain'] = $this->domain;
+        }
     	$params['collection'] = $this->name;
     	try {
     		$data = Image::processImage($data, 512, true);
