@@ -5,6 +5,7 @@ use \IndicoIo\IndicoIo as IndicoIo;
 use \IndicoIo\Collection as Collection;
 
 $collection_name = '__test_php__';
+$alternate_name = '__alternate_test_php__';
 
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,8 +18,24 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp() {
         self::skipIfMissingCredentials();
-        $collection = new Collection($GLOBALS['collection_name']);
-        if (array_key_exists($GLOBALS['collection_name'], IndicoIo::collections())) {
+
+        $collectionSet = IndicoIo::collections();
+      
+        if (array_key_exists($GLOBALS['collection_name'], $collectionSet)) {
+            $collectionInfo = $collectionSet[$GLOBALS['collection_name']];
+            $collection = new Collection($GLOBALS['collection_name']);
+            if ($collectionInfo['registered'] == TRUE) {
+                $collection->deregister();
+            }
+            $collection->clear();
+        } 
+
+        if (array_key_exists($GLOBALS['alternate_name'], $collectionSet)) {
+            $collectionInfo = $collectionSet[$GLOBALS['alternate_name']];
+            $collection = new Collection($GLOBALS['alternate_name']);
+            if ($collectionInfo['registered'] == TRUE) {
+                $collection->deregister();
+            }
             $collection->clear();
         } 
     }
@@ -123,5 +140,83 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $result = $collection->predict(array('http://i.imgur.com/x4eMDNY.jpg'))[0];
         $this->assertArrayHasKey('label 1', $result);
     }
+
+    public function testRename()
+    {
+        self::skipIfMissingCredentials();
+        $collection = new Collection($GLOBALS['collection_name']);
+        $collection->addData(array(
+            array('input 1', 'label 1'),
+            array('input 2', 'label 2'),
+            array('input 3', 'label 3'),
+            array('input 4', 'label 4')
+        ));
+        $collection->train();
+        $collection->wait();
+        $collection->rename($GLOBALS['alternate_name']);
+    }
+
+
+    public function testRegister()
+    {
+        self::skipIfMissingCredentials();
+        $collection = new Collection($GLOBALS['collection_name']);
+        $collection->addData(array(
+            array('input 1', 'label 1'),
+            array('input 2', 'label 2'),
+            array('input 3', 'label 3'),
+            array('input 4', 'label 4')
+        ));
+        $collection->train();
+        $collection->wait();
+        $collection->register();
+        $info = $collection->info();
+        $this->assertEquals($info['registered'], TRUE);
+        $this->assertEquals($info['public'], FALSE);
+        $collection->deregister();
+    }
+
+    public function testRegisterPublic()
+    {
+        self::skipIfMissingCredentials();
+        $collection = new Collection($GLOBALS['collection_name']);
+        $collection->addData(array(
+            array('input 1', 'label 1'),
+            array('input 2', 'label 2'),
+            array('input 3', 'label 3'),
+            array('input 4', 'label 4')
+        ));
+        $collection->train();
+        $collection->wait();
+        $collection->register(array('make_public'=>TRUE));
+        $info = $collection->info();
+        $this->assertEquals($info['registered'], TRUE);
+        $this->assertEquals($info['public'], TRUE);
+        $collection->deregister();
+    }
+
+
+    public function testAuthorize()
+    {
+        self::skipIfMissingCredentials();
+        $collection = new Collection($GLOBALS['collection_name']);
+        $collection->addData(array(
+            array('input 1', 'label 1'),
+            array('input 2', 'label 2'),
+            array('input 3', 'label 3'),
+            array('input 4', 'label 4')
+        ));
+        $collection->train();
+        $collection->wait();
+        $collection->register();
+        $info = $collection->info();
+        $this->assertEquals($info['registered'], TRUE);
+        $collection->authorize('contact@indico.io');
+        $info = $collection->info();
+        $this->assertContains('contact@indico.io', $info['permissions']['read']);
+        $collection->deauthorize('contact@indico.io');
+        $collection->deregister();
+    }
+
 
 }
