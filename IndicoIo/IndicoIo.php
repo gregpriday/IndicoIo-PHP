@@ -327,17 +327,20 @@ class Collection
     var $name;
     var $domain;
 
-    function __construct($name, $domain=NULL)
-    {
-        $this->name = $name;
-        $this->domain = $domain;
+    function __construct($name, $domain=NULL, $shared=NULL) {
+        $this->keywords = array(
+            "domain" => $domain,
+            "collection" => $name,
+            "shared" => $shared
+        );
+    }
+
+    function _callService($data, $service, $method, $params = array()) {
+        $params = array_merge($this->keywords, $params);
+        return IndicoIo::_callService($data, $service, $method, $params);
     }
 
     function addData($data, $params=array()) {
-        $params['collection'] = $this->name;
-        if ($this->domain) {
-            $params['domain'] = $this->domain;
-        }
         if (gettype($data[0]) != 'array') {
             $params['batch'] = False;
             try {
@@ -357,36 +360,29 @@ class Collection
                 $data = array_map(NULL, $x, $y);
             } catch (ImageException $e) {}
         }
-        return IndicoIo::_callService($data, 'custom', 'add_data', $params);
+        return $this->_callService($data, 'custom', 'add_data', $params);
     }
 
     function predict($data, $params=array()) {
-        if ($this->domain) {
-            $params['domain'] = $this->domain;
-        }
-        $params['collection'] = $this->name;
         try {
             $data = Image::processImage($data, 512, true);
         } catch (ImageException $e) {}
-        return IndicoIo::_callService($data, 'custom', 'predict', $params);
+        return $this->_callService($data, 'custom', 'predict', $params);
     }
 
     function removeExample($data, $params=array()) {
-        $params['collection'] = $this->name;
         try {
             $data = Image::processImage($data, 512, true);
         } catch (ImageException $e) {}
-        return IndicoIo::_callService($data, 'custom', 'remove_example', $params);
+        return $this->_callService($data, 'custom', 'remove_example', $params);
     }
 
     function train($params=array()) {
-        $params['collection'] = $this->name;
-        return IndicoIo::_callService(NULL, 'custom', 'train', $params);
+        return $this->_callService(NULL, 'custom', 'train', $params);
     }
 
     function info($params=array()) {
-        $params['collection'] = $this->name;
-        return IndicoIo::_callService(NULL, 'custom', 'info', $params);
+        return $this->_callService(NULL, 'custom', 'info', $params);
     }
 
     function wait($interval=1, $params=array()) {
@@ -406,41 +402,35 @@ class Collection
     }
 
     function clear($params=array()) {
-        $params['collection'] = $this->name;
-        return IndicoIo::_callService(NULL, 'custom', 'clear_collection', $params);
+        return $this->_callService(NULL, 'custom', 'clear_collection', $params);
     }
 
     function rename($name, $params=array()) {
-        $params['collection'] = $this->name;
         $params['name'] = $name;
-        $result = IndicoIo::_callService(NULL, 'custom', 'rename', $params);
-        $this->name = $name;
+        $result = $this->_callService(NULL, 'custom', 'rename', $params);
+        $this->keywords['collection'] = $name;
         return $result;
     }
 
     function register($params=array()) {
-        $params['collection'] = $this->name;
-        return IndicoIo::_callService(NULL, 'custom', 'register', $params);
+        return $this->_callService(NULL, 'custom', 'register', $params);
     }
 
     function deregister($params=array()) {
-        $params['collection'] = $this->name;
-        return IndicoIo::_callService(NULL, 'custom', 'deregister', $params);
+        return $this->_callService(NULL, 'custom', 'deregister', $params);
     }
 
     function authorize($email, $params=array()) {
-        $params['collection'] = $this->name;
         $params['email'] = $email;
         if (!array_key_exists('permission_type', $params)) {
             $params['permission_type'] = 'read';
         }
-        return IndicoIo::_callService(NULL, 'custom', 'authorize', $params);
+        return $this->_callService(NULL, 'custom', 'authorize', $params);
     }
 
     function deauthorize($email, $params=array()) {
-        $params['collection'] = $this->name;
         $params['email'] = $email;
-        return IndicoIo::_callService(NULL, 'custom', 'deauthorize', $params);
+        return $this->_callService(NULL, 'custom', 'deauthorize', $params);
     }
 
 }
