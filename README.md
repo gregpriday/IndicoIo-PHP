@@ -21,7 +21,7 @@ Installation
         }
     ],
     "require": {
-        "indicoio/indicoio-php": "*"
+        "indicoio/indicoio-php": "dev-master"
     }
 }
 ```
