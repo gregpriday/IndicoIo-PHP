@@ -71,7 +71,7 @@ class IndicoIo
 
     public static function language($text, $params=array())
     {
-        return self::_callService($text, 'language', $params);
+        return self::_callService($text, 'language', 'predict', $params);
     }
 
 
