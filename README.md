@@ -21,7 +21,7 @@ Installation
         }
     ],
     "require": {
-        "indicoio/indicoio-php": "*"
+        "indicoio/indicoio-php": "dev-master"
     }
 }
 ```
@@ -32,7 +32,7 @@ composer install
 
 Documentation
 ------------
-Found [here](http://indico.readme.io/v1.0/docs)
+Found [here](https://indico.io/docs)
 
 Usage
 ----
