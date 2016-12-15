@@ -20,24 +20,24 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         self::skipIfMissingCredentials();
 
         $collectionSet = IndicoIo::collections();
-      
+
         if (array_key_exists($GLOBALS['collection_name'], $collectionSet)) {
-            $collectionInfo = $collectionSet[$GLOBALS['collection_name']];
             $collection = new Collection($GLOBALS['collection_name']);
+            $collectionInfo = $collection->info();
             if ($collectionInfo['registered'] == TRUE) {
                 $collection->deregister();
             }
             $collection->clear();
-        } 
+        }
 
         if (array_key_exists($GLOBALS['alternate_name'], $collectionSet)) {
-            $collectionInfo = $collectionSet[$GLOBALS['alternate_name']];
             $collection = new Collection($GLOBALS['alternate_name']);
+            $collectionInfo = $collection->info();
             if ($collectionInfo['registered'] == TRUE) {
                 $collection->deregister();
             }
             $collection->clear();
-        } 
+        }
     }
 
     public function testInitializeCollection()
@@ -83,7 +83,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $collection->addData(array('input 1', 'label 1'));
     }
 
-    public function testRemoveExample() 
+    public function testRemoveExample()
     {
         self::skipIfMissingCredentials();        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
