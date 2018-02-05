@@ -7,6 +7,8 @@ use Utils\Image as Image;
 use \Eventviva\ImageResize;
 
 \PHPUnit_Framework_Error_Warning::$enabled = FALSE;
+# notice, strict:
+\PHPUnit_Framework_Error_Notice::$enabled = FALSE;
 
 class IndicoIoTest extends \PHPUnit_Framework_TestCase
 {

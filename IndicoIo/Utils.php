@@ -15,7 +15,7 @@ Class Image
         return $array;
     }
 
-    public static function isValidURL($url) { 
+    public static function isValidURL($url) {
         return filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
 
@@ -27,7 +27,7 @@ Class Image
         if (file_exists($string)) {
             return self::resizeImage(new ImageResize($string), $size, $min_axis);
         } else if (self::isValidURL($string)) {
-            return $string; 
+            return $string;
         } else {
             try {
                 $image = ImageResize::createFromString(base64_decode($string));
@@ -65,6 +65,31 @@ Class Image
         return base64_encode($image);
     }
 }
+
+
+class PDF
+{
+    public static function processPDFs($pdfs) {
+        $array = array();
+        foreach ($pdfs as $pdf) {
+            array_push($array, self::processPDF($pdf));
+        }
+
+        return $array;
+    }
+
+    public static function processPDF($pdf) {
+        if (gettype($pdf) == "array") {
+            return self::processPDFs($pdf);
+        }
+
+        $filecontents = file_get_contents($pdf);
+        $pdf = $filecontents ? base64_encode($filecontents) : $pdf;
+        return $pdf;
+    }
+
+}
+
 
 Class Multi
 {

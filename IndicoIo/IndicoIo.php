@@ -4,6 +4,7 @@ namespace IndicoIo;
 use Exception;
 use Utils\Multi as Multi;
 use Utils\Image as Image;
+use Utils\PDF as PDF;
 use Utils\ImageException as ImageException;
 use Configure\Configure as Configure;
 
@@ -16,7 +17,7 @@ require_once("Utils.php");
 class IndicoIo
 {
     public static $config;
-    public static $TEXT_APIS = array("sentiment", "sentimenthq", "text_tags", "language", "political", "keywords", "twitter_engagement", "personality");
+    public static $TEXT_APIS = array("sentiment", "sentimenthq", "text_tags", "language", "political", "keywords", "twitter_engagement", "personality", "summarization");
     public static $IMAGE_APIS = array("fer", "image_features", "image_recognition", "facial_features", "content_filter");
 
     protected static function api_url($cloud = false, $service, $batch = false, $method = false, $api_key, $params = array()) {
@@ -54,10 +55,10 @@ class IndicoIo
         return self::_callService($text, 'political', 'predict', $params);
     }
 
-  public static function emotion($text, $params=array())
-  {
-      return self::_callService($text, 'emotion', 'predict', $params);
-  }
+    public static function emotion($text, $params=array())
+    {
+        return self::_callService($text, 'emotion', 'predict', $params);
+    }
 
     public static function sentiment($text, $params=array())
     {
@@ -204,6 +205,16 @@ class IndicoIo
     {
         $params['persona'] = True;
         return self::_callService($text, 'personality', 'predict', $params);
+    }
+
+    public static function summarization($text, $params=array())
+    {
+        return self::_callService($text, 'summarization', 'predict', $params);
+    }
+
+    public static function pdf_extraction($pdf, $params=array())
+    {
+        return self::_callService(PDF::processPDF($pdf), 'pdfextraction', 'predict', $params);
     }
 
     # Multi API Calls
