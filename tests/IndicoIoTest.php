@@ -132,36 +132,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(in_array('commander', $keys_result));
     }
 
-    public function testKeywords()
-    {
-        self::skipIfMissingCredentials();
-        $text = "This sentence contains three keywords ...";
-        $data = IndicoIo::keywords($text);
-        $keys_result = array_keys($data);
-        $this->assertEquals(count($keys_result), 3);
-        $this->assertEmpty(array_diff($keys_result, explode(" ", $text)));
-    }
-
-    public function testLanguageKeywords()
-    {
-        self::skipIfMissingCredentials();
-        $text = "La semaine suivante il remporte sa premiere victoire dans la descente de Val Gardena en Italie près de cinq ans après la dernière victoire en Coupe du monde d'un Français dans cette discipline avec le succès de Nicolas Burtin à Kvitfjell";
-        $data = IndicoIo::keywords($text, array("language" => "French"));
-        $keys_result = array_keys($data);
-        $this->assertEquals(count($keys_result), 3);
-        $this->assertEmpty(array_diff($keys_result, explode(" ", strtolower($text))));
-    }
-
-    public function testAutoLanguageKeywords()
-    {
-        self::skipIfMissingCredentials();
-        $text = "La semaine suivante il remporte sa premiere victoire dans la descente de Val Gardena en Italie près de cinq ans après la dernière victoire en Coupe du monde d'un Français dans cette discipline avec le succès de Nicolas Burtin à Kvitfjell";
-        $data = IndicoIo::keywords($text, array("language" => "detect"));
-        $keys_result = array_keys($data);
-        $this->assertEquals(count($keys_result), 3);
-        $this->assertEmpty(array_diff($keys_result, explode(" ", strtolower($text))));
-    }
-
     public function testTwitterEngagement()
     {
         self::skipIfMissingCredentials();
@@ -170,88 +140,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $data = IndicoIo::twitter_engagement($examples);
         $this->assertGreaterThan(0, $data);
         $this->assertGreaterThan($data, 1);
-    }
-
-    public function testPeople()
-    {
-        self::skipIfMissingCredentials();
-        $text = 'Barack Obama is scheduled to give a talk next Saturday at the White House.';
-        $result = IndicoIo::people($text);
-        $this->assertArrayHasKey('text', $result[0]);
-        $this->assertArrayHasKey('confidence', $result[0]);
-        $this->assertArrayHasKey('position', $result[0]);
-
-        $result_v1 = IndicoIo::people($text, $params=array("version"=>1));
-        $this->assertNotEquals($result[0]['confidence'], $result_v1[0]['confidence']);
-
-    }
-
-    public function testBatchPeople()
-    {
-        self::skipIfMissingCredentials();
-        $text = array_fill(0, 2, 'Barack Obama is scheduled to give a talk next Saturday at the White House.');
-        $result = IndicoIo::people($text);
-        $this->assertArrayHasKey('text', $result[0][0]);
-        $this->assertArrayHasKey('confidence', $result[0][0]);
-        $this->assertArrayHasKey('position', $result[0][0]);
-        $this->assertEquals(count($result), count($text));
-
-        $result_v1 = IndicoIo::people($text, $params=array("version"=>1));
-        $this->assertNotEquals($result[0][0]['confidence'], $result_v1[0][0]['confidence']);
-    }
-
-    public function testPlaces()
-    {
-        self::skipIfMissingCredentials();
-        $text = "Lets all go to Virginia beach before it gets too cold to wander outside.";
-        $result = IndicoIo::places($text);
-        $this->assertArrayHasKey('text', $result[0]);
-        $this->assertArrayHasKey('confidence', $result[0]);
-        $this->assertArrayHasKey('position', $result[0]);
-
-        $result_v1 = IndicoIo::places($text, $params=array("version"=>1));
-        $this->assertNotEquals($result[0]['confidence'], $result_v1[0]['confidence']);
-    }
-
-    public function testBatchPlaces()
-    {
-        self::skipIfMissingCredentials();
-        $text = array_fill(0, 2, "Lets all go to Virginia beach before it gets too cold to wander outside.");
-        $result = IndicoIo::places($text);
-        $this->assertArrayHasKey('text', $result[0][0]);
-        $this->assertArrayHasKey('confidence', $result[0][0]);
-        $this->assertArrayHasKey('position', $result[0][0]);
-        $this->assertEquals(count($result), count($text));
-
-        $result_v1 = IndicoIo::places($text, $params=array("version"=>1));
-        $this->assertNotEquals($result[0][0]['confidence'], $result_v1[0][0]['confidence']);
-    }
-
-    public function testOrganizations()
-    {
-        self::skipIfMissingCredentials();
-        $text = "A year ago, the New York Times published confidential comments about ISIS' ideology by Major General Michael K. Nagata, then U.S. Special Operations commander in the Middle East.";
-        $result = IndicoIo::organizations($text);
-        $this->assertArrayHasKey('text', $result[0]);
-        $this->assertArrayHasKey('confidence', $result[0]);
-        $this->assertArrayHasKey('position', $result[0]);
-
-        $result_v1 = IndicoIo::organizations($text, $params=array("version"=>1));
-        $this->assertNotEquals($result[0]['confidence'], $result_v1[0]['confidence']);
-    }
-
-    public function testBatchOrganizations()
-    {
-        self::skipIfMissingCredentials();
-        $text = array_fill(0, 2, "A year ago, the New York Times published confidential comments about ISIS' ideology by Major General Michael K. Nagata, then U.S. Special Operations commander in the Middle East.");
-        $result = IndicoIo::organizations($text);
-        $this->assertArrayHasKey('text', $result[0][0]);
-        $this->assertArrayHasKey('confidence', $result[0][0]);
-        $this->assertArrayHasKey('position', $result[0][0]);
-        $this->assertEquals(count($result), count($text));
-
-        $result_v1 = IndicoIo::organizations($text, $params=array("version"=>1));
-        $this->assertNotEquals($result[0][0]['confidence'], $result_v1[0][0]['confidence']);
     }
 
     public function testRelevance()
@@ -292,44 +180,12 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(count($result[1]), 300);
     }
 
-    public function testIntersections()
-    {
-        self::skipIfMissingCredentials();
-        $examples = array(
-            'I want to move to New York City!',
-            'I want to live in Boston.',
-            'I hate living in the dumpster.'
-        );
-
-        $data = IndicoIo::intersections($examples, array("apis"=> array("text_tags", "sentiment")));
-        $this->assertTrue(array_key_exists("sailing", $data));
-        $this->assertTrue(array_key_exists("sentiment", $data["sailing"]));
-    }
-
-    public function testIntersectionsHistoric()
-    {
-        self::skipIfMissingCredentials();
-        $examples = array(
-            'I want to move to New York City!',
-            'I want to live in Boston.',
-            'I hate living in the dumpster.'
-        );
-        $sentiment = IndicoIo::sentiment($examples);
-        $texttags = IndicoIo::text_tags($examples);
-        $data = IndicoIo::intersections(
-            array("sentiment"=> $sentiment, "text_tags" =>$texttags),
-            array("apis"=> array("text_tags", "sentiment"))
-        );
-        $this->assertTrue(array_key_exists("sailing", $data));
-        $this->assertTrue(array_key_exists("sentiment", $data["sailing"]));
-    }
-
     public function testFerWhenGivenTheRightParameters()
     {
         self::skipIfMissingCredentials();
         $keys_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
         $image = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'/data_test.json');
-        $data = IndicoIo::fer($image);
+        $data = IndicoIo::fer($image, array("version"=>2));
         $keys_result = array_keys($data);
 
         sort($keys_result);
@@ -343,7 +199,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         self::skipIfMissingCredentials();
         $keys_expected = array('Angry', 'Sad', 'Neutral', 'Surprise', 'Fear', 'Happy');
         $image = "https://s3-us-west-2.amazonaws.com/indico-test-data/face.jpg";
-        $data = IndicoIo::fer($image);
+        $data = IndicoIo::fer($image, array("version"=>2));
         $keys_result = array_keys($data);
 
         sort($keys_result);
@@ -502,21 +358,6 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $this->assertGreaterThan($data[0], 1);
     }
 
-    public function testBatchKeywords()
-    {
-        self::skipIfMissingCredentials();
-        $examples = array(
-            'This sentence contains three keywords',
-            'We are in for a windy Thursday and a rainy Friday'
-        );
-        $data = IndicoIo::keywords($examples);
-        $this->assertEquals(count($data), count($examples));
-
-        $datapoint = $data[0];
-        $keys_result = array_keys($datapoint);
-        $this->assertEquals(count($keys_result), 3);
-    }
-
     public function testBatchFer()
     {
         self::skipIfMissingCredentials();
@@ -524,7 +365,7 @@ class IndicoIoTest extends \PHPUnit_Framework_TestCase
         $image = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'/data_test.json');
         $examples = array($image, $image);
 
-        $data = IndicoIo::fer($examples);
+        $data = IndicoIo::fer($examples, array("version"=>2));
         $this->assertEquals(count($data), count($examples));
 
         $datapoint = $data[0];
