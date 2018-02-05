@@ -24,8 +24,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         if (array_key_exists($GLOBALS['collection_name'], $collectionSet)) {
             $collection = new Collection($GLOBALS['collection_name']);
             $collectionInfo = $collection->info();
-            if ($collectionInfo['registered'] == TRUE) {
-                $collection->deregister();
+            try {
+                if ($collectionInfo['registered'] == TRUE) {
+                    $collection->deregister();
+                }
+            } catch (\Exception $e) {
+                # pass
             }
             $collection->clear();
         }
@@ -33,8 +37,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         if (array_key_exists($GLOBALS['alternate_name'], $collectionSet)) {
             $collection = new Collection($GLOBALS['alternate_name']);
             $collectionInfo = $collection->info();
-            if ($collectionInfo['registered'] == TRUE) {
-                $collection->deregister();
+            try {
+                if ($collectionInfo['registered'] == TRUE) {
+                    $collection->deregister();
+                }
+            } catch (\Exception $e) {
+                # pass
             }
             $collection->clear();
         }
@@ -124,12 +132,10 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $image = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'/data_test.json');
         $collection->addData(array(
             array('http://i.imgur.com/x4eMDNY.jpg', 'label 1'),
-            array('http://i.imgur.com/x4eMDNY.jpg', 'label 2'),
-            array('http://i.imgur.com/x4eMDNY.jpg', 'label 3'),
-            array('http://i.imgur.com/x4eMDNY.jpg', 'label 4')
+            array('http://i.imgur.com/x4eMDNY.jpg', 'label 1'),
         ));
         $collection->addData(array(
-            array($image, 'label 1'),
+            array($image, 'label 2'),
             array($image, 'label 2'),
         ));
         $collection->train();
@@ -171,8 +177,8 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $collection->wait();
         $collection->register();
         $info = $collection->info();
-        $this->assertEquals($info['registered'], TRUE);
-        $this->assertEquals($info['public'], FALSE);
+        $this->assertEquals($info['registered'], 'true');
+        $this->assertEquals($info['public'], 'false');
         $collection->deregister();
     }
 
@@ -190,8 +196,8 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $collection->wait();
         $collection->register(array('make_public'=>TRUE));
         $info = $collection->info();
-        $this->assertEquals($info['registered'], TRUE);
-        $this->assertEquals($info['public'], TRUE);
+        $this->assertEquals($info['registered'], 'true');
+        $this->assertEquals($info['public'], 'true');
         $collection->deregister();
     }
 
@@ -210,7 +216,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $collection->wait();
         $collection->register();
         $info = $collection->info();
-        $this->assertEquals($info['registered'], TRUE);
+        $this->assertEquals($info['registered'], 'true');
         $collection->authorize('contact@indico.io');
         $info = $collection->info();
         $this->assertContains('contact@indico.io', $info['permissions']['read']);

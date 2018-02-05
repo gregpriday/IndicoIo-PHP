@@ -443,7 +443,6 @@ class Collection
         $params['email'] = $email;
         return $this->_callService(NULL, 'custom', 'deauthorize', $params);
     }
-
 }
 
 
