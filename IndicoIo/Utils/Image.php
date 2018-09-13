@@ -55,13 +55,13 @@ Class Image
         }
 
         if ($min_axis) {
-            $image -> resizeToBestFit($size, $size);
+            $image->resizeToBestFit($size, $size);
             return base64_encode($image);
         }
         if ($size) {
-            $image -> resize($size, $size);
+            $image->resize($size, $size);
         }
-        $image -> getImageAsString(IMAGETYPE_PNG, 4);
+        $image->getImageAsString(IMAGETYPE_PNG, 4);
         return base64_encode($image);
     }
 }
