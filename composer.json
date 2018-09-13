@@ -1,6 +1,6 @@
 {
-    "name": "indicoio/indicoio-php",
-    "description": "Rest Api Wrapper for PHP.",
+    "name": "gregpriday/indicoio-php",
+    "description": "Modified version of the Indico PHP Rest API wrapper.",
     "version": "0.6.2",
     "keywords": ["Rest Api Wrapper for PHP", "IndicoIo"],
     "type": "project",
