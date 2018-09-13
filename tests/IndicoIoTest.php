@@ -4,7 +4,7 @@ namespace IndicoIo\Test;
 
 use IndicoIo\IndicoIo as IndicoIo;
 use IndicoIO\Configure;
-use Utils\Image as Image;
+use IndicoIo\Utils\Image;
 use \Eventviva\ImageResize;
 
 use PHPUnit\Framework\TestCase;
