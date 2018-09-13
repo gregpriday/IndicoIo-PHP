@@ -55,33 +55,33 @@ class IndicoIo
         if (!array_key_exists('v', $params) && !array_key_exists('version', $params)) {
             $params['version'] = 2;
         }
-        return self::_callService($text, 'political', 'predict', $params);
+        return static::_callService($text, 'political', 'predict', $params);
     }
 
     public static function emotion($text, $params=array())
     {
-        return self::_callService($text, 'emotion', 'predict', $params);
+        return static::_callService($text, 'emotion', 'predict', $params);
     }
 
     public static function sentiment($text, $params=array())
     {
-        return self::_callService($text, 'sentiment', 'predict', $params);
+        return static::_callService($text, 'sentiment', 'predict', $params);
     }
 
     public static function sentiment_hq($text, $params=array())
     {
-        return self::_callService($text, 'sentimenthq', 'predict', $params);
+        return static::_callService($text, 'sentimenthq', 'predict', $params);
     }
 
     public static function language($text, $params=array())
     {
-        return self::_callService($text, 'language', 'predict', $params);
+        return static::_callService($text, 'language', 'predict', $params);
     }
 
 
     public static function text_tags($text, $params=array())
     {
-        return self::_callService($text, 'texttags', 'predict', $params);
+        return static::_callService($text, 'texttags', 'predict', $params);
     }
 
 
@@ -89,7 +89,7 @@ class IndicoIo
     {
         $size = array_key_exists("detect", $params) && $params["detect"] ? false : 48;
         $image = Image::processImage($image, $size, false);
-        return self::_callService($image, 'fer', 'predict', $params);
+        return static::_callService($image, 'fer', 'predict', $params);
     }
 
     public static function keywords($text, $params=array())
@@ -102,13 +102,13 @@ class IndicoIo
             $params["version"] = 1;
         }
 
-        return self::_callService($text, 'keywords', 'predict', $params);
+        return static::_callService($text, 'keywords', 'predict', $params);
     }
 
 
     public static function twitter_engagement($text, $params=array())
     {
-        return self::_callService($text, 'twitterengagement', 'predict', $params);
+        return static::_callService($text, 'twitterengagement', 'predict', $params);
     }
 
     public static function people($text, $params=array())
@@ -116,7 +116,7 @@ class IndicoIo
         if (!array_key_exists('v', $params) && !array_key_exists('version', $params)){
             $params['version'] = 2;
         }
-        return self::_callService($text, 'people', 'predict', $params);
+        return static::_callService($text, 'people', 'predict', $params);
     }
 
     public static function places($text, $params=array())
@@ -124,7 +124,7 @@ class IndicoIo
         if (!array_key_exists('v', $params) && !array_key_exists('version', $params)){
             $params['version'] = 2;
         }
-        return self::_callService($text, 'places', 'predict', $params);
+        return static::_callService($text, 'places', 'predict', $params);
     }
 
     public static function organizations($text, $params=array())
@@ -132,20 +132,20 @@ class IndicoIo
         if (!array_key_exists('v', $params) && !array_key_exists('version', $params)){
             $params['version'] = 2;
         }
-        return self::_callService($text, 'organizations', 'predict', $params);
+        return static::_callService($text, 'organizations', 'predict', $params);
     }
 
     public static function relevance($text, $queries, $params=array())
     {
         $params['queries'] = $queries;
         $params['synonyms'] = false;
-        return self::_callService($text, 'relevance', 'predict', $params);
+        return static::_callService($text, 'relevance', 'predict', $params);
     }
 
     public static function text_features($text, $params=array())
     {
         $params['synonyms'] = false;
-        return self::_callService($text, 'textfeatures', 'predict', $params);
+        return static::_callService($text, 'textfeatures', 'predict', $params);
     }
 
     public static function intersections($input, $params=array())
@@ -162,14 +162,14 @@ class IndicoIo
         }
         $converted_apis = Multi::filterApis($apis, self::$TEXT_APIS);
         $params["apis"] = $converted_apis;
-        return self::_callService($input, 'apis/intersections', false, $params);
+        return static::_callService($input, 'apis/intersections', false, $params);
     }
 
 
     public static function facial_features($image, $params=array())
     {
         $image = Image::processImage($image, 64, false);
-        return self::_callService($image, 'facialfeatures', 'predict', $params);
+        return static::_callService($image, 'facialfeatures', 'predict', $params);
     }
 
     public static function image_features($image, $params=array())
@@ -178,46 +178,46 @@ class IndicoIo
         if (!array_key_exists('v', $params) || !array_key_exists('version', $params)){
             $params['version'] = 3;
         }
-        return self::_callService($image, 'imagefeatures', 'predict', $params);
+        return static::_callService($image, 'imagefeatures', 'predict', $params);
     }
 
     public static function image_recognition($image, $params=array())
     {
         $image = Image::processImage($image, 144, true);
-        return self::_callService($image, 'imagerecognition', 'predict', $params);
+        return static::_callService($image, 'imagerecognition', 'predict', $params);
     }
 
     public static function content_filter($image, $params=array())
     {
         $image = Image::processImage($image, 128, true);
-        return self::_callService($image, 'contentfiltering', 'predict', $params);
+        return static::_callService($image, 'contentfiltering', 'predict', $params);
     }
 
     public static function facial_localization($image, $params=array())
     {
         $image = Image::processImage($image, false, false);
-        return self::_callService($image, 'faciallocalization', 'predict', $params);
+        return static::_callService($image, 'faciallocalization', 'predict', $params);
     }
 
     public static function personality($text, $params=array())
     {
-        return self::_callService($text, 'personality', 'predict', $params);
+        return static::_callService($text, 'personality', 'predict', $params);
     }
 
     public static function personas($text, $params=array())
     {
         $params['persona'] = True;
-        return self::_callService($text, 'personality', 'predict', $params);
+        return static::_callService($text, 'personality', 'predict', $params);
     }
 
     public static function summarization($text, $params=array())
     {
-        return self::_callService($text, 'summarization', 'predict', $params);
+        return static::_callService($text, 'summarization', 'predict', $params);
     }
 
     public static function pdf_extraction($pdf, $params=array())
     {
-        return self::_callService(PDF::processPDF($pdf), 'pdfextraction', 'predict', $params);
+        return static::_callService(PDF::processPDF($pdf), 'pdfextraction', 'predict', $params);
     }
 
     # Multi API Calls
@@ -226,7 +226,7 @@ class IndicoIo
         $apis = self::get($params, "apis");
         $converted_apis = Multi::filterApis($apis, self::$TEXT_APIS);
         $params["apis"] = $converted_apis;
-        $results = self::_callService($text, "apis/multiapi", false, $params);
+        $results = static::_callService($text, "apis/multiapi", false, $params);
         return Multi::convertResults($results, $apis);
     }
 
@@ -235,7 +235,7 @@ class IndicoIo
         $apis = self::get($params, "apis");
         $converted_apis = Multi::filterApis($apis, self::$IMAGE_APIS);
         $params["apis"] = $converted_apis;
-        $results = self::_callService($image, "apis/multiapi", false, $params);
+        $results = static::_callService($image, "apis/multiapi", false, $params);
         return Multi::convertResults($results, $apis);
     }
 
@@ -332,7 +332,7 @@ class IndicoIo
     }
 
     public static function collections($params = array()) {
-        return self::_callService(NULL, 'custom', 'collections', $params);
+        return static::_callService(NULL, 'custom', 'collections', $params);
     }
 }
 
