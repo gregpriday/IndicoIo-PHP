@@ -1,16 +1,19 @@
 <?php
 
 namespace IndicoIo\Test;
-use \IndicoIo\IndicoIo as IndicoIo;
-use Configure\Configure as Configure;
+
+use IndicoIo\IndicoIo as IndicoIo;
+use IndicoIO\Configure;
 use Utils\Image as Image;
 use \Eventviva\ImageResize;
 
-\PHPUnit_Framework_Error_Warning::$enabled = FALSE;
-# notice, strict:
-\PHPUnit_Framework_Error_Notice::$enabled = FALSE;
+use PHPUnit\Framework\TestCase;
 
-class IndicoIoTest extends \PHPUnit_Framework_TestCase
+\PHPUnit\Framework\Error\Warning::$enabled = FALSE;
+# notice, strict:
+\PHPUnit\Framework\Error\Notice::$enabled = FALSE;
+
+class IndicoIoTest extends TestCase
 {
     private function skipIfMissingCredentials()
     {

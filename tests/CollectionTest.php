@@ -1,13 +1,14 @@
 <?php
 
 namespace IndicoIo\Test;
-use \IndicoIo\IndicoIo as IndicoIo;
-use \IndicoIo\Collection as Collection;
+use IndicoIo\IndicoIo as IndicoIo;
+use IndicoIo\Collection as Collection;
+use PHPUnit\Framework\TestCase;
 
 $collection_name = '__test_php__';
 $alternate_name = '__alternate_test_php__';
 
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends TestCase
 {
     private function skipIfMissingCredentials()
     {
@@ -50,13 +51,11 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testInitializeCollection()
     {
-        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
     }
 
     public function testListCollections()
     {
-        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
         $collection->addData(array(
             array('input 1', 'label 1')
@@ -68,7 +67,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testTrainPredict()
     {
-        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
         $collection->addData(array(
             array('input 1', 'label 1'),
@@ -86,14 +84,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testAddSingle()
     {
-        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
         $collection->addData(array('input 1', 'label 1'));
     }
 
     public function testRemoveExample()
     {
-        self::skipIfMissingCredentials();        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
         $collection->addData(array(
             array('input 1', 'label 1'),
@@ -112,7 +108,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testClearCollection()
     {
-        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
         $collection->addData(array(
             array('input 1', 'label 1'),
@@ -127,7 +122,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testTrainPredictImage()
     {
-        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
         $image = file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR.'/data_test.json');
         $collection->addData(array(
@@ -149,7 +143,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testRename()
     {
-        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
         $collection->addData(array(
             array('input 1', 'label 1'),
@@ -165,7 +158,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testRegister()
     {
-        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
         $collection->addData(array(
             array('input 1', 'label 1'),
@@ -184,7 +176,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testRegisterPublic()
     {
-        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
         $collection->addData(array(
             array('input 1', 'label 1'),
@@ -204,7 +195,6 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function testAuthorize()
     {
-        self::skipIfMissingCredentials();
         $collection = new Collection($GLOBALS['collection_name']);
         $collection->addData(array(
             array('input 1', 'label 1'),

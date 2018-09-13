@@ -5,15 +5,18 @@
     "keywords": ["Rest Api Wrapper for PHP", "IndicoIo"],
     "type": "project",
     "require": {
-        "php": ">=5.3",
+        "php": ">=7.0",
         "eventviva/php-image-resize": "1.5.*",
         "ext-curl": "*"
     },
 	"require-dev": {
-        "phpunit/phpunit": "3.7.*"
+        "phpunit/phpunit": "7.*"
     },
     "autoload": {
         "psr-4": {"IndicoIo\\": "IndicoIo/"}
+    },
+    "autoload-dev": {
+        "psr-4": {"IndicoIo\\Test\\": "tests/"}
     },
     "minimum-stability": "dev"
 }
