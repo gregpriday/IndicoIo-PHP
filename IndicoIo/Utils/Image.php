@@ -1,8 +1,8 @@
 <?php
 
-namespace Utils;
-use \Eventviva\ImageResize;
-class ImageException extends \Exception {}
+namespace IndicoIo\Utils;
+
+use Eventviva\ImageResize;
 
 Class Image
 {
@@ -63,61 +63,5 @@ Class Image
         }
         $image -> getImageAsString(IMAGETYPE_PNG, 4);
         return base64_encode($image);
-    }
-}
-
-
-class PDF
-{
-    public static function processPDFs($pdfs) {
-        $array = array();
-        foreach ($pdfs as $pdf) {
-            array_push($array, self::processPDF($pdf));
-        }
-
-        return $array;
-    }
-
-    public static function processPDF($pdf) {
-        if (gettype($pdf) == "array") {
-            return self::processPDFs($pdf);
-        }
-
-        $filecontents = file_get_contents($pdf);
-        $pdf = $filecontents ? base64_encode($filecontents) : $pdf;
-        return $pdf;
-    }
-
-}
-
-
-Class Multi
-{
-    public static function filterApis($apis, $accepted) {
-        foreach ($apis as $api) {
-            if (!in_array($api, $accepted)) {
-                throw new Exception(
-                    $api
-                    + " is not an acceptable api name. Please use "
-                    + implode(",", $accepted)
-                );
-            }
-        }
-
-        return implode(",", $apis);
-    }
-
-    public static function convertResults($results, $apis) {
-        $converted_results = array();
-        foreach ($apis as $api) {
-            $response = $results[$api];
-            if (array_key_exists("results", $response)) {
-                $converted_results[$api] = $response["results"];
-            } else {
-                throw new Exception($api . " encountered an error: " . $response['error']);
-            }
-        }
-
-        return $converted_results;
     }
 }
